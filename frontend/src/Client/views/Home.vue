@@ -116,150 +116,88 @@
       </div>
     </section>
 
-    <!-- Featured Products - iPhone -->
-    <section class="section bg-background">
-      <div class="container-custom">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">iPhone</h2>
-          <router-link to="/products?category=iPhone" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
-            Xem tất cả →
-          </router-link>
-        </div>
-        <div v-if="loadingIphone" class="text-center py-12">
-          <div class="inline-block animate-spin">
-            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
+    <!-- Featured Products - Dynamic from Admin -->
+    <template v-for="section in featuredProductSections" :key="section.id">
+      <section class="section" :class="section.bgColor === 'white' ? 'bg-white' : 'bg-background'">
+        <div class="container-custom">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="section-title mb-0">{{ section.title }}</h2>
+            <router-link
+              v-if="section.viewAllLink"
+              :to="section.viewAllLink"
+              class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase"
+            >
+              {{ section.viewAllText || 'Xem tất cả' }} →
+            </router-link>
+          </div>
+
+          <div v-if="loadingFeaturedProducts" class="text-center py-12">
+            <div class="inline-block animate-spin">
+              <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </div>
+          </div>
+
+          <div v-else class="product-grid">
+            <div v-for="product in section.products" :key="product.id" class="product-card">
+              <router-link :to="`/products/${product.id}`">
+                <div class="relative mb-4">
+                  <span v-if="product.isFeatured" class="badge absolute top-2 left-2 z-10" :class="section.badgeStyle || 'badge-hot'">
+                    {{ section.badgeText || 'HOT' }}
+                  </span>
+                  <img :src="asset(product.thumbnail || product.image)" :alt="product.name" class="w-full aspect-square object-contain">
+                </div>
+                <h3 class="font-semibold text-text mb-2 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
+                <div class="flex items-center gap-2">
+                  <span class="price">{{ formatVND(product.price) }}</span>
+                </div>
+              </router-link>
+              <button @click="handleAddToCart(product)" class="btn btn-primary w-full mt-3 text-xs py-2">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Thêm vào giỏ
+              </button>
+            </div>
           </div>
         </div>
-        <div v-else class="product-grid">
-          <div v-for="product in iphoneProducts" :key="product.id" class="product-card">
-            <router-link :to="`/products/${product.id}`">
-              <div class="relative mb-4">
-                <span v-if="product.isFeatured" class="badge absolute top-2 left-2 z-10 badge-hot">
-                  HOT
-                </span>
-                <img :src="asset(product.thumbnail || product.image)" :alt="product.name" class="w-full aspect-square object-contain">
-              </div>
-              <h3 class="font-semibold text-text mb-2 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
-              <div class="flex items-center gap-2">
-                <span class="price">{{ formatVND(product.price) }}</span>
-              </div>
-            </router-link>
-            <button @click="handleAddToCart(product)" class="btn btn-primary w-full mt-3 text-xs py-2">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-              Thêm vào giỏ
-            </button>
+      </section>
+    </template>
+
+    <!-- Promo Banner - Dynamic from Admin -->
+    <section class="py-8" v-if="promoBanners.length > 0">
+      <div class="container-custom">
+        <div :class="`grid grid-cols-1 md:grid-cols-${Math.min(promoBanners.length, 2)} gap-4`">
+          <div
+            v-for="banner in promoBanners"
+            :key="banner.id"
+            :class="[
+              'rounded-lg p-8 text-white relative overflow-hidden',
+              banner.gradientClass || 'bg-gradient-to-r from-blue-600 to-blue-800'
+            ]"
+          >
+            <h3 class="text-2xl font-bold mb-2">{{ banner.title }}</h3>
+            <p class="mb-4 opacity-90">{{ banner.description }}</p>
+            <component
+              :is="banner.linkUrl ? (isExternal(banner.linkUrl) ? 'a' : 'router-link') : 'div'"
+              :to="!isExternal(banner.linkUrl || '') ? banner.linkUrl : undefined"
+              :href="isExternal(banner.linkUrl || '') ? banner.linkUrl : undefined"
+              :target="isExternal(banner.linkUrl || '') && (banner.openInNewTab ?? true) ? '_blank' : undefined"
+              :rel="isExternal(banner.linkUrl || '') && (banner.openInNewTab ?? true) ? 'noopener' : undefined"
+              :class="[
+                'btn text-sm',
+                banner.buttonStyle || 'bg-white text-blue-600 hover:bg-gray-100'
+              ]"
+            >
+              {{ banner.buttonText || 'Khám phá ngay' }}
+            </component>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Promo Banner -->
-    <section class="py-8">
-      <div class="container-custom">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-8 text-white relative overflow-hidden">
-            <h3 class="text-2xl font-bold mb-2">Samsung Galaxy S24 Ultra</h3>
-            <p class="mb-4 opacity-90">AI Phone đầu tiên</p>
-            <router-link to="/products?brand=samsung" class="btn bg-white text-blue-600 hover:bg-gray-100 text-sm">
-              Khám phá ngay
-            </router-link>
-          </div>
-          <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg p-8 text-white relative overflow-hidden">
-            <h3 class="text-2xl font-bold mb-2">Xiaomi 14 Ultra</h3>
-            <p class="mb-4 opacity-90">Camera Leica đỉnh cao</p>
-            <router-link to="/products?brand=xiaomi" class="btn bg-white text-orange-600 hover:bg-gray-100 text-sm">
-              Xem ngay
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Featured Products - Samsung -->
-    <section class="section bg-white">
-      <div class="container-custom">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">Samsung</h2>
-          <router-link to="/products?brand=Samsung" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
-            Xem tất cả →
-          </router-link>
-        </div>
-        <div v-if="loadingSamsung" class="text-center py-12">
-          <div class="inline-block animate-spin">
-            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-          </div>
-        </div>
-        <div v-else class="product-grid">
-          <div v-for="product in samsungProducts" :key="product.id" class="product-card">
-            <router-link :to="`/products/${product.id}`">
-              <div class="relative mb-4">
-                <span v-if="product.isFeatured" class="badge absolute top-2 left-2 z-10 badge-hot">
-                  NEW
-                </span>
-                <img :src="asset(product.thumbnail || product.image)" :alt="product.name" class="w-full aspect-square object-contain">
-              </div>
-              <h3 class="font-semibold text-text mb-2 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
-              <div class="flex items-center gap-2">
-                <span class="price">{{ formatVND(product.price) }}</span>
-              </div>
-            </router-link>
-            <button @click="handleAddToCart(product)" class="btn btn-primary w-full mt-3 text-xs py-2">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-              Thêm vào giỏ
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Products - XIAOMI -->
-    <section class="section bg-white">
-      <div class="container-custom">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">Samsung</h2>
-          <router-link to="/products?brand=Samsung" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
-            Xem tất cả →
-          </router-link>
-        </div>
-        <div v-if="loadingSamsung" class="text-center py-12">
-          <div class="inline-block animate-spin">
-            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-          </div>
-        </div>
-        <div v-else class="product-grid">
-          <div v-for="product in samsungProducts" :key="product.id" class="product-card">
-            <router-link :to="`/products/${product.id}`">
-              <div class="relative mb-4">
-                <span v-if="product.isFeatured" class="badge absolute top-2 left-2 z-10 badge-hot">
-                  NEW
-                </span>
-                <img :src="asset(product.thumbnail || product.image)" :alt="product.name" class="w-full aspect-square object-contain">
-              </div>
-              <h3 class="font-semibold text-text mb-2 line-clamp-2 min-h-[48px]">{{ product.name }}</h3>
-              <div class="flex items-center gap-2">
-                <span class="price">{{ formatVND(product.price) }}</span>
-              </div>
-            </router-link>
-            <button @click="handleAddToCart(product)" class="btn btn-primary w-full mt-3 text-xs py-2">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-              Thêm vào giỏ
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Why Choose Us -->
     <section class="section bg-background">
@@ -310,12 +248,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import productService from '@/services/productService'
 import { useCartStore } from '@/stores/cartStore'
 import { resolveAssetUrl as asset } from '@/utils/assets'
 import { formatVND } from '@/utils/currency'
 
 import bannerService from '@/services/bannerService'
+import homePageService from '@/services/homePageService'
 import { useSiteSettings } from '@/composables/useSiteSettings'
 import { useSettingStore } from '@/stores/settingStore'
 
@@ -363,35 +301,39 @@ const leftBanner = computed(() => heroBanners.value[0] || null)
 
 const rightSmallBanners = ref([])
 
-const iphoneProducts = ref([])
-const samsungProducts = ref([])
-const loadingIphone = ref(false)
-const loadingSamsung = ref(false)
+// Featured Products - Dynamic from Admin
+const featuredProductSections = ref([])
+const loadingFeaturedProducts = ref(false)
+
+// Promo Banners - Dynamic from Admin
+const promoBanners = ref([])
+const loadingPromoBanners = ref(false)
+
 const cartStore = useCartStore()
 
-const fetchIphoneProducts = async () => {
+const fetchFeaturedProducts = async () => {
   try {
-    loadingIphone.value = true
-    const res = await productService.getProductsByBrand('iPhone', { limit: 5 })
-    iphoneProducts.value = res.data?.data || []
+    loadingFeaturedProducts.value = true
+    const res = await homePageService.getFeaturedProducts()
+    featuredProductSections.value = res.data?.data || []
   } catch (error) {
-    console.error('Error fetching iPhone products:', error)
-    iphoneProducts.value = []
+    console.error('Error fetching featured products:', error)
+    featuredProductSections.value = []
   } finally {
-    loadingIphone.value = false
+    loadingFeaturedProducts.value = false
   }
 }
 
-const fetchSamsungProducts = async () => {
+const fetchPromoBanners = async () => {
   try {
-    loadingSamsung.value = true
-    const res = await productService.getProductsByBrand('Samsung', { limit: 5 })
-    samsungProducts.value = res.data?.data || []
+    loadingPromoBanners.value = true
+    const res = await homePageService.getPromoBanners()
+    promoBanners.value = res.data?.data || []
   } catch (error) {
-    console.error('Error fetching Samsung products:', error)
-    samsungProducts.value = []
+    console.error('Error fetching promo banners:', error)
+    promoBanners.value = []
   } finally {
-    loadingSamsung.value = false
+    loadingPromoBanners.value = false
   }
 }
 
@@ -429,8 +371,8 @@ onMounted(() => {
 
   loadHeroBanners();
   fetchRightSmallBanners();
-  fetchIphoneProducts();
-  fetchSamsungProducts();
+  fetchFeaturedProducts();
+  fetchPromoBanners();
 });
 </script>
 
