@@ -1,0 +1,163 @@
+/* Import Barlow font - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles - T&T MOBILE */
+@layer base {
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    color: #000000;
+    background-color: #FEFEFE;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: #0167AB;
+  }
+
+  a {
+    color: #07B2BD;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: #0167AB;
+  }
+}
+
+/* Component classes */
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 rounded-xl;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white;
+  }
+
+  .btn-cart {
+    @apply bg-primary text-white px-8 py-4 text-base font-bold hover:bg-primary-700;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full px-4 py-3 border border-border-light bg-white text-text focus:border-primary focus:outline-none transition-colors rounded-xl;
+  }
+
+  .input-search {
+    @apply w-full px-4 py-3 border-0 bg-white text-text focus:outline-none;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white shadow-card rounded-2xl border border-gray-100;
+  }
+
+  .product-card {
+    @apply bg-white p-4 transition-shadow duration-200 hover:shadow-lg;
+  }
+
+  /* Product price */
+  .price {
+    @apply text-primary font-bold text-lg;
+  }
+
+  .price-old {
+    @apply text-text-muted line-through text-sm;
+  }
+
+  .price-sale {
+    @apply text-primary font-bold text-lg;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-block px-2 py-1 text-xs font-semibold uppercase;
+  }
+
+  .badge-sale {
+    @apply bg-primary text-white;
+  }
+
+  .badge-new {
+    @apply bg-success text-white;
+  }
+
+  .badge-hot {
+    @apply bg-warning text-black;
+  }
+
+  /* Section */
+  .section {
+    @apply py-10 md:py-16;
+  }
+
+  .section-title {
+    @apply text-2xl md:text-3xl font-bold text-primary mb-6 uppercase tracking-wide;
+  }
+
+  /* Container */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-10;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply text-white font-semibold uppercase text-sm tracking-wide hover:opacity-80 transition-opacity;
+  }
+
+  .nav-link-dark {
+    @apply text-text font-semibold uppercase text-sm tracking-wide hover:text-primary transition-colors;
+  }
+
+  /* Header styles */
+  .header-top {
+    @apply bg-primary text-white;
+  }
+
+  .header-main {
+    @apply bg-white shadow-header;
+  }
+
+  /* Logo image styles */
+  .header-main img[alt] {
+    @apply transition-opacity hover:opacity-80;
+  }
+
+  /* Footer */
+  .footer {
+    @apply bg-white border-t border-border;
+  }
+
+  .footer-heading {
+    @apply text-text-muted uppercase text-sm font-semibold mb-4 tracking-wide;
+  }
+
+  /* Grid sản phẩm */
+  .product-grid {
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4;
+  }
+
+  /* Swiper/Slider overrides */
+  .swiper-button-next,
+  .swiper-button-prev {
+    @apply text-primary;
+  }
+}
+
