@@ -572,7 +572,8 @@ const descriptionHtml = computed(() => {
       });
       
       try {
-        const htmlFromLib = parser.parse(data).join('');
+        const parsed = parser.parse(data);
+        const htmlFromLib = Array.isArray(parsed) ? parsed.join('') : parsed;
         if (htmlFromLib && htmlFromLib.trim()) {
           return htmlFromLib;
         }

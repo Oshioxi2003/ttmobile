@@ -12,15 +12,20 @@ const routes = [
       { path: 'collections/:slug', name: 'Collection', component: () => import('./views/Products.vue') },
       { path: 'pages/:slug(.*)*', name: 'Page', component: () => import('./views/Page.vue') },
       { path: 'policies/:slug(.*)*', name: 'Policy', component: () => import('./views/Page.vue') },
-      { path: 'checkout', name: 'Checkout', component: () => import('./views/Checkout.vue'), meta: { requiresAuth: true } },
+      // { path: 'checkout', name: 'Checkout', component: () => import('./views/Checkout.vue'), meta: { requiresAuth: true } },
       { path: 'profile', name: 'Profile', component: () => import('./views/Profile.vue'), meta: { requiresAuth: true } },
-      { path: 'wishlist', name: 'Wishlist', component: () => import('./views/Wishlist.vue'), meta: { requiresAuth: true } }
+      { path: 'wishlist', name: 'Wishlist', component: () => import('./views/Wishlist.vue'), meta: { requiresAuth: true } },
+      
+      // Error pages
+      { path: '403', name: 'Error403', component: () => import('./views/Error403.vue') },
+      { path: '500', name: 'Error500', component: () => import('./views/Error500.vue') }
     ]
   },
   { path: '/login', name: 'Login', component: () => import('./views/Login.vue') },
   { path: '/register', name: 'Register', component: () => import('./views/Register.vue') },
-  // Optional catch-all: redirect anything unknown to home
-  { path: '/:pathMatch(.*)*', redirect: '/' }
+  
+  // 404 - Must be last
+  { path: '/:pathMatch(.*)*', name: 'Error404', component: () => import('./views/Error404.vue') }
 ]
 
 const router = createRouter({

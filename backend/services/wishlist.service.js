@@ -8,19 +8,21 @@ class WishlistService {
             include: [{
                 model: Product,
                 as: 'product',
-                where: { isActive: true },
                 required: false,
                 include: [{
                     model: Category,
                     as: 'category',
+                    required: false,
                     attributes: ['id', 'name', 'slug']
                 }]
             }],
             order: [['createdAt', 'DESC']]
         });
 
-        // Lọc bỏ những item mà product đã bị xóa hoặc inactive
-        return items.filter(item => item.product !== null);
+        // Lọc bỏ những item mà product đã bị xóa hoặc inactive, và return product data
+        return items
+            .filter(item => item.product !== null && item.product.isActive === true)
+            .map(item => item.product);
     }
 
     // Add product to wishlist
