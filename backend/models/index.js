@@ -61,6 +61,30 @@ Wishlist.belongsTo(Product, {
     as: 'product'
 });
 
+// Review - Product (One to Many)
+Product.hasMany(Review, {
+    foreignKey: 'productId',
+    as: 'reviews',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+Review.belongsTo(Product, {
+    foreignKey: 'productId',
+    as: 'product'
+});
+
+// Review - User (One to Many)
+User.hasMany(Review, {
+    foreignKey: 'userId',
+    as: 'reviews',
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
+});
+Review.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+});
+
 module.exports = {
     sequelize,
     User,

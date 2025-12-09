@@ -51,16 +51,39 @@ class BannerController {
     // Create banner
     async create(req, res) {
         try {
+            // Debug logging
+            console.log('Banner create request:');
+            console.log('- req.file:', req.file);
+            console.log('- req.body:', req.body);
+            console.log('- Content-Type:', req.headers['content-type']);
+
+            // Validate required image field
+            if (!req.file) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Image file is required for banner creation. Please upload an image.' 
+                });
+            }
+
             const bannerData = {
-                ...req.body,
+                title: req.body.title,
+                subtitle: req.body.subtitle || null,
+                description: req.body.description || null,
+                link: req.body.link || null,
+                buttonText: req.body.buttonText || null,
+                position: req.body.position || 'hero',
                 sortOrder: parseInt(req.body.sortOrder, 10) || 0,
                 isActive: [true, 'true', 1, '1'].includes(req.body.isActive),
                 openInNewTab: req.body.openInNewTab === 'null' ? null : [true, 'true', 1, '1'].includes(req.body.openInNewTab),
-                image: req.file ? `/uploads/banners/${req.file.filename}` : null
+                image: `/uploads/banners/${req.file.filename}`
             };
+
+            console.log('- bannerData to create:', bannerData);
+
             const banner = await bannerService.createBanner(bannerData);
             res.status(201).json({ success: true, message: 'Banner created successfully', data: banner });
         } catch (error) {
+            console.error('Error creating banner:', error);
             res.status(400).json({ success: false, message: 'Error creating banner', error: error.message });
         }
     }

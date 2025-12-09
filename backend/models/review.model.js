@@ -54,12 +54,5 @@ const Review = sequelize.define('Review', {
   timestamps: true
 });
 
-// Associations
-Review.belongsTo(Product, { foreignKey: 'productId' });
-Product.hasMany(Review, { foreignKey: 'productId' });
-
-Review.belongsTo(User, { foreignKey: 'userId', allowNull: true });
-User.hasMany(Review, { foreignKey: 'userId' });
-
 module.exports = Review;
 

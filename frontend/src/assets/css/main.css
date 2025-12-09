@@ -70,7 +70,7 @@
   }
 
   .product-card {
-    @apply bg-white p-4 transition-shadow duration-200 hover:shadow-lg;
+    @apply bg-white p-4 rounded-lg border border-gray-100 transition-all duration-200 hover:shadow-lg hover:border-primary/20;
   }
 
   /* Product price */

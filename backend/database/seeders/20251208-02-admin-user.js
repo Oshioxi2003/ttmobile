@@ -5,11 +5,16 @@ const bcrypt = require('bcryptjs')
 
 module.exports = {
   async up(queryInterface) {
+    // Demo admin user removed for production deployment
+    // Create your admin user manually after deployment for security
+    // Or uncomment and update the code below with your own credentials
+    
+    /*
     const now = new Date()
-    const email = 'admin@ttmobile.com'
+    const email = 'your-admin@email.com'
     const exists = await queryInterface.rawSelect('users', { where: { email } }, ['id'])
     if (!exists) {
-      const passwordHash = await bcrypt.hash('admin123', 10)
+      const passwordHash = await bcrypt.hash('your-secure-password', 10)
       await queryInterface.bulkInsert('users', [
         {
           username: 'admin',
@@ -23,6 +28,9 @@ module.exports = {
         }
       ])
     }
+    */
+    
+    return Promise.resolve()
   },
 
   async down(queryInterface) {

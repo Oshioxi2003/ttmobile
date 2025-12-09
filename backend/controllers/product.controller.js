@@ -85,7 +85,10 @@ class ProductController {
                 isFeatured: body.isFeatured === 'true' || body.isFeatured === true,
                 isActive: body.isActive === 'false' ? false : true,
                 images: body.images || [],
-                specifications: body.specifications || body.specs || {}
+                specifications: body.specifications || body.specs || {},
+                color: body.color,
+                batteryHealth: body.batteryHealth,
+                warranty: body.warranty
             };
 
             if (req.file) {
@@ -130,7 +133,10 @@ class ProductController {
                 isFeatured: body.isFeatured === 'true' || body.isFeatured === true,
                 isActive: body.isActive === 'false' ? false : true,
                 images: body.images || [],
-                specifications: body.specifications || body.specs || {}
+                specifications: body.specifications || body.specs || {},
+                color: body.color,
+                batteryHealth: body.batteryHealth,
+                warranty: body.warranty
             };
 
             if (req.file) {

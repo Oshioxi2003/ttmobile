@@ -30,7 +30,8 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
-              <input v-model="form.slug" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="tên-sản-phẩm">
+              <input v-model="form.slug" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="tên-sản-phẩm" @input="productSlugTouched = true">
+              <p class="text-xs text-gray-500 mt-1">Tự động tạo từ tên sản phẩm. Có thể chỉnh sửa thủ công.</p>
             </div>
           </div>
         </div>
@@ -104,6 +105,24 @@
             </div>
           </div>
 
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Màu sắc</label>
+              <input v-model="form.color" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="Trắng, Đen, Xanh...">
+              <p class="text-xs text-gray-500 mt-1">Có thể nhập nhiều màu, cách nhau bởi dấu phẩy</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Dung lượng pin (%)</label>
+              <input v-model.number="form.batteryHealth" type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" min="0" max="100" placeholder="100">
+              <p class="text-xs text-gray-500 mt-1">Tình trạng pin hiện tại (0-100%)</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bảo hành</label>
+              <input v-model="form.warranty" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" placeholder="12 tháng, 6 tháng...">
+              <p class="text-xs text-gray-500 mt-1">VD: 12 tháng, 6 tháng chính hãng</p>
+            </div>
+          </div>
+
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả ngắn</label>
@@ -112,39 +131,68 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết</label>
-              <div id="editorjs" class="border border-gray-300 rounded-lg p-4 bg-white min-h-[200px]"></div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-sm font-medium text-gray-700">Mô tả chi tiết</label>
+                <button
+                  type="button"
+                  @click="editorExpanded = !editorExpanded"
+                  class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                >
+                  <span>{{ editorExpanded ? 'Thu gọn' : 'Xem thêm' }}</span>
+                  <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': editorExpanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+              </div>
+              <div 
+                id="editorjs" 
+                class="border border-gray-300 rounded-lg p-4 bg-white transition-all overflow-hidden"
+                :class="editorExpanded ? 'min-h-[400px] max-h-[800px]' : 'min-h-[200px] max-h-[300px]'"
+              ></div>
             </div>
           </div>
         </div>
 
         <!-- Specifications Section -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span class="w-1 h-6 bg-indigo-500 mr-3 rounded"></span>
-            Thông số kỹ thuật
-          </h2>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+              <span class="w-1 h-6 bg-indigo-500 mr-3 rounded"></span>
+              Thông số kỹ thuật
+            </h2>
+            <button
+              v-if="specKeys.length > 5"
+              type="button"
+              @click="specsExpanded = !specsExpanded"
+              class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+            >
+              <span>{{ specsExpanded ? 'Thu gọn' : `Xem thêm (${specKeys.length - 5})` }}</span>
+              <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': specsExpanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+          </div>
 
           <div class="space-y-3">
-            <div v-for="(key, index) in specKeys" :key="index" class="flex gap-3 items-center p-3 bg-gray-50 rounded-lg">
+            <div v-for="(key, idx) in displayedSpecs" :key="idx" class="flex gap-3 items-center p-3 bg-gray-50 rounded-lg">
               <input
-                v-model="specKeys[index]"
+                v-model="specKeys[idx]"
                 type="text"
                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                 placeholder="Tên thông số (VD: Màn hình)"
-                @blur="updateSpecKey(index, specKeys[index])"
+                @blur="updateSpecKey(idx, specKeys[idx])"
               >
               <span class="text-gray-400">:</span>
               <input
-                v-model="specValues[index]"
+                v-model="specValues[idx]"
                 type="text"
                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                 placeholder="Giá trị (VD: 6.1 inch)"
-                @blur="updateSpecValue(index, specValues[index])"
+                @blur="updateSpecValue(idx, specValues[idx])"
               >
               <button
                 type="button"
-                @click="removeSpec(index)"
+                @click="removeSpec(idx)"
                 class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -359,7 +407,10 @@ const form = reactive({
   description: '',
   thumbnail: '',
   images: [],
-  specs: {}
+  specs: {},
+  color: '',
+  batteryHealth: 100,
+  warranty: ''
 })
 
 const categories = ref([])
@@ -380,6 +431,15 @@ let editor = null
 
 const specKeys = ref([])
 const specValues = ref([])
+const specsExpanded = ref(false)
+const editorExpanded = ref(false)
+
+const displayedSpecs = computed(() => {
+  if (specsExpanded.value || specKeys.value.length <= 5) {
+    return specKeys.value
+  }
+  return specKeys.value.slice(0, 5)
+})
 
 const addSpec = () => {
   const newKey = `Thông số ${specKeys.value.length + 1}`
@@ -433,6 +493,7 @@ const fetchCategories = async () => {
 
 // Utilities for slug handling (Vietnamese friendly)
 const slugTouched = ref(false)
+const productSlugTouched = ref(false)
 const slugify = (str = '') => {
   return (str || '')
     .toString()
@@ -450,6 +511,13 @@ const slugify = (str = '') => {
 watch(() => newCategory.name, (val) => {
   if (!slugTouched.value || !newCategory.slug) {
     newCategory.slug = slugify(val)
+  }
+})
+
+// Auto-generate product slug from product name
+watch(() => form.name, (val) => {
+  if (!productSlugTouched.value || !form.slug) {
+    form.slug = slugify(val)
   }
 })
 
@@ -531,6 +599,9 @@ const load = async () => {
   form.images = Array.isArray(p.images) ? p.images : []
   // Load specs - support both 'specs' and 'specifications' field names
   form.specs = p.specs || p.specifications || {}
+  form.color = p.color || ''
+  form.batteryHealth = p.batteryHealth ?? 100
+  form.warranty = p.warranty || ''
   initSpecs()
 
   let editorData = null;
@@ -549,13 +620,33 @@ const uploadFile = async (file) => {
     throw new Error('File quá lớn (tối đa 10MB)')
   }
 
+  // Check if file is actually an image
+  if (!file.type.startsWith('image/')) {
+    throw new Error('File không phải là ảnh hợp lệ')
+  }
+
   try {
     const fd = new FormData()
     fd.append('image', file)
-    const res = await api.post('/upload/single?type=products', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
-    return res.data?.data?.url || res.data?.url || res.data?.data
+    
+    const res = await api.post('/upload/single?type=products', fd, { 
+      headers: { 
+        'Content-Type': 'multipart/form-data' 
+      } 
+    })
+    
+    // Handle different response formats from backend
+    const url = res.data?.data?.url || res.data?.url || res.data?.data?.path || res.data?.data
+    
+    if (!url) {
+      console.error('Upload response:', res.data)
+      throw new Error('Không nhận được URL từ server')
+    }
+    
+    return url
   } catch (err) {
-    throw err || new Error('Upload thất bại')
+    console.error('Upload error:', err.response?.data || err.message)
+    throw new Error(err.response?.data?.message || err.response?.data?.error || 'Upload thất bại')
   }
 }
 
@@ -613,11 +704,15 @@ const handleSubmit = async () => {
     form.specs = syncedSpecs
 
     const payload = { ...form }
-    // Ensure category uses slug field and not id
-    if (payload.categoryId && !payload.categorySlug) {
-      payload.categorySlug = payload.categoryId
+    
+    // Convert categorySlug to categoryId for backend
+    if (payload.categorySlug) {
+      const category = categories.value.find(c => c.slug === payload.categorySlug)
+      if (category) {
+        payload.categoryId = category.id
+      }
     }
-    delete payload.categoryId
+    delete payload.categorySlug
 
     // Convert specs to specifications for backend compatibility
     if (payload.specs) {
@@ -662,17 +757,35 @@ const initEditor = (data = { blocks: [] }) => {
           uploader: {
             uploadByFile: async (file) => {
               try {
+                console.log('Uploading file:', file.name, file.type, file.size)
                 const url = await uploadFile(file);
+                console.log('Upload successful, URL:', url)
+                
                 return {
                   success: 1,
-                  file: { url },
+                  file: {
+                    url: url
+                  },
                 };
               } catch (error) {
+                console.error('Upload error in ImageTool:', error);
+                // Show error to user
+                alert(error.message || 'Upload ảnh thất bại')
                 return {
                   success: 0,
+                  message: error.message || 'Upload failed'
                 };
               }
             },
+            uploadByUrl: async (url) => {
+              // Optional: support uploading by URL
+              return {
+                success: 1,
+                file: {
+                  url: url
+                }
+              };
+            }
           },
         },
       },
@@ -680,6 +793,13 @@ const initEditor = (data = { blocks: [] }) => {
     data: data,
     placeholder: 'Viết mô tả chi tiết ở đây...',
     defaultBlock: 'paragraph',
+    onReady: () => {
+      console.log('Editor.js is ready to work!')
+    },
+    onChange: async (api, event) => {
+      // Optional: track changes
+      console.log('Editor content changed', event)
+    }
   });
 };
 

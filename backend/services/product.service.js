@@ -120,6 +120,16 @@ class ProductService {
         const product = await Product.findByPk(id);
         if (!product) return null;
         
+        // Manually delete related records to avoid foreign key constraints
+        const { Review, Wishlist } = require('../models');
+        
+        // Delete all reviews for this product
+        await Review.destroy({ where: { productId: id } });
+        
+        // Delete all wishlist entries for this product
+        await Wishlist.destroy({ where: { productId: id } });
+        
+        // Now delete the product
         await product.destroy();
         return true;
     }

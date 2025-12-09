@@ -121,6 +121,7 @@ const closeModal = () => {
 const handleSave = async (bannerData, imageFile) => {
   const isEdit = !!bannerData.id
   try {
+    console.log('Saving banner:', { bannerData, imageFile, isEdit })
     if (isEdit) {
       await bannerService.updateBanner(bannerData.id, bannerData, imageFile)
       alert('Banner updated successfully')
@@ -132,6 +133,7 @@ const handleSave = async (bannerData, imageFile) => {
     await fetchBanners()
   } catch (error) {
     console.error('Error saving banner:', error)
+    console.error('Error response:', error.response?.data)
     alert('Failed to save banner: ' + (error.response?.data?.message || error.message))
     // Keep modal open by not setting submitting to false in the modal
     if (modalRef.value) {

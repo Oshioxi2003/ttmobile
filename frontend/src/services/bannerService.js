@@ -10,11 +10,17 @@ import api from './api'
 function buildBannerFormData(data, imageFile) {
   const formData = new FormData()
 
-  // Append all fields from the data object
+  console.log('Building FormData with:', { data, imageFile })
+
+  // Fields to exclude from FormData
+  const excludeFields = ['image', 'id', 'createdAt', 'updatedAt']
+
+  // Append all fields from the data object, except excluded ones
   for (const key in data) {
-    if (Object.prototype.hasOwnProperty.call(data, key)) {
+    if (Object.prototype.hasOwnProperty.call(data, key) && !excludeFields.includes(key)) {
       const value = data[key]
       if (value !== null && value !== undefined) {
+        console.log(`FormData.append('${key}', ${JSON.stringify(value)})`)
         formData.append(key, value)
       }
     }
@@ -22,10 +28,10 @@ function buildBannerFormData(data, imageFile) {
 
   // Append the image file if it exists
   if (imageFile instanceof File) {
+    console.log('FormData.append(\'image\', File:', imageFile.name, imageFile.type, imageFile.size, 'bytes)')
     formData.append('image', imageFile)
-  } else if (data.image === '') {
-    // Handle image removal by sending an empty string for the 'image' field
-    formData.append('image', '')
+  } else {
+    console.warn('No image file provided!')
   }
 
   return formData
@@ -51,9 +57,8 @@ export const bannerService = {
   // ADMIN: Update an existing banner
   updateBanner: (id, bannerData, imageFile) => {
     const formData = buildBannerFormData(bannerData, imageFile)
-    // Use POST with _method=PUT for full multipart/form-data compatibility
-    formData.append('_method', 'PUT')
-    return api.post(`/banners/${id}`, formData)
+    // Use PUT directly (axios supports FormData with PUT)
+    return api.put(`/banners/${id}`, formData)
   },
 
   // ADMIN: Delete a banner

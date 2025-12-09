@@ -33,7 +33,7 @@
                 @change="handleImageUpload"
                 class="input-file"
               />
-              <p class="text-xs text-gray-500 mt-2">PNG, JPG, WebP. Recommended size < 1MB.</p>
+              <p class="text-xs text-gray-500 mt-2">PNG, JPG, WebP. Recommended size < 10MB.</p>
             </div>
           </div>
         </div>

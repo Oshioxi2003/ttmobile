@@ -55,7 +55,12 @@
                 </div>
               </td>
               <td class="py-3 px-4">{{ formatCurrency(p.price) }}</td>
-              <td class="py-3 px-4">{{ p.category?.name || '—' }}</td>
+              <td class="py-3 px-4">
+                <span v-if="p.category?.name" class="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">
+                  {{ p.category.name }}
+                </span>
+                <span v-else class="text-gray-400">—</span>
+              </td>
               <td class="py-3 px-4">{{ p.stock }}</td>
               <td class="py-3 px-4">
                 <span class="px-2 py-1 rounded-full text-xs" :class="p.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'">
@@ -119,6 +124,7 @@ const fetchProducts = async () => {
     }
     const res = await api.get('/products', { params })
     products.value = res.data.data || res.data.products || []
+    console.log('Products loaded:', products.value.length, products.value[0]) // Debug log
     const p = res.data.pagination || res.data.meta || {}
     pagination.total = p.total || 0
     pagination.totalPages = p.totalPages || 1

@@ -70,16 +70,21 @@ class SettingService {
         });
     }
 
-    // Get site settings for frontend (public). Also attach public nav_config
+    // Get site settings for frontend (public). Also attach public nav_config, contact, social
     async getSiteSettings() {
-        const site = await this.getAllSettings('site');
-        try {
-            const nav = await this.getAllSettings('nav');
-            if (nav && Object.prototype.hasOwnProperty.call(nav, 'nav_config')) {
-                site.nav_config = nav.nav_config;
+        // Lấy tất cả settings từ các group cần thiết
+        const settings = await Setting.findAll({
+            where: {
+                group: ['site', 'nav', 'contact', 'social', 'purchase']
             }
-        } catch (_) {}
-        return site;
+        });
+
+        const result = {};
+        settings.forEach(setting => {
+            result[setting.key] = setting.getParsedValue();
+        });
+
+        return result;
     }
 
     // Get contact info for purchasing (FB, Zalo)
