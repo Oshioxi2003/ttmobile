@@ -38,7 +38,11 @@ app.use(helmet({
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
         ? (process.env.ALLOWED_ORIGINS || '').split(',')
-        : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+        : [
+            
+            'https://rs1rgfxz-3000.asse.devtunnels.ms',
+            'https://rs1rgfxz-5173.asse.devtunnels.ms'
+          ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

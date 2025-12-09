@@ -39,12 +39,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://rs1rgfxz-3000.asse.devtunnels.ms/',
         changeOrigin: true
       },
       // Proxy static files served by backend (e.g., /uploads/..)
       '/uploads': {
-        target: 'http://localhost:3000',
+        target: 'https://rs1rgfxz-3000.asse.devtunnels.ms/',
         changeOrigin: true
       }
     }
