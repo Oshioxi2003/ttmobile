@@ -2,6 +2,14 @@ import { ref } from 'vue'
 import api from '@/services/api'
 import { useSettingStore } from '@/stores/settingStore'
 
+// Helper to resolve asset URL
+const resolveAssetUrl = (path) => {
+  if (!path) return ''
+  if (path.startsWith('http://') || path.startsWith('https://')) return path
+  const baseUrl = import.meta.env.VITE_ASSET_BASE || window.location.origin
+  return path.startsWith('/') ? `${baseUrl}${path}` : `${baseUrl}/${path}`
+}
+
 const siteSettings = ref({
   site_name: 'T&T Mobile',
   site_description: '',
@@ -19,11 +27,24 @@ const siteSettings = ref({
 })
 
 const isLoaded = ref(false)
+const loadingPromise = ref(null)
+const cacheExpiry = ref(0)
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes cache
 
 export function useSiteSettings() {
   const settingStore = useSettingStore()
 
   const loadSettings = async () => {
+    // Return cached data if still valid
+    if (isLoaded.value && Date.now() < cacheExpiry.value) {
+      return siteSettings.value
+    }
+    
+    // Return existing loading promise if already loading
+    if (loadingPromise.value) {
+      return loadingPromise.value
+    }
+    
     if (isLoaded.value) return siteSettings.value
 
     // Prefer public settings store (cached + merged) to avoid extra calls
@@ -48,7 +69,7 @@ export function useSiteSettings() {
         siteSettings.value = {
           site_name: name || siteSettings.value.site_name,
           site_description: desc || siteSettings.value.site_description,
-          site_logo: logo || siteSettings.value.site_logo,
+          site_logo: logo ? resolveAssetUrl(logo) : siteSettings.value.site_logo,
           nav_config: nav || siteSettings.value.nav_config,
           contact_phone: contact_phone || siteSettings.value.contact_phone,
           contact_email: contact_email || siteSettings.value.contact_email,
@@ -61,18 +82,23 @@ export function useSiteSettings() {
           purchase_message: purchase_message || siteSettings.value.purchase_message
         }
         isLoaded.value = true
+        cacheExpiry.value = Date.now() + CACHE_DURATION
+        loadingPromise.value = null
       }
-    } catch {}
+    } catch {
+      loadingPromise.value = null
+    }
 
     // Fallback to direct site endpoint if store did not yield values
     if (!isLoaded.value) {
       try {
-        const response = await api.get('/settings/site', { skipAuthRedirect: true })
+        loadingPromise.value = api.get('/settings/site', { skipAuthRedirect: true })
+        const response = await loadingPromise.value
         const data = response.data?.data || response.data || {}
         siteSettings.value = {
           site_name: data.site_name || siteSettings.value.site_name,
           site_description: data.site_description || siteSettings.value.site_description,
-          site_logo: data.site_logo || siteSettings.value.site_logo,
+          site_logo: data.site_logo ? resolveAssetUrl(data.site_logo) : siteSettings.value.site_logo,
           nav_config: data.nav_config || siteSettings.value.nav_config,
           contact_phone: data.contact_phone || siteSettings.value.contact_phone,
           contact_email: data.contact_email || siteSettings.value.contact_email,
@@ -85,7 +111,10 @@ export function useSiteSettings() {
           purchase_message: data.purchase_message || siteSettings.value.purchase_message
         }
         isLoaded.value = true
+        cacheExpiry.value = Date.now() + CACHE_DURATION
+        loadingPromise.value = null
       } catch (error) {
+        loadingPromise.value = null
         console.error('Failed to load site settings:', error)
       }
     }

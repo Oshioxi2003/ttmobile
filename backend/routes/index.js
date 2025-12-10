@@ -14,6 +14,7 @@ const uploadRoutes = require('./upload.routes');
 const pageRoutes = require('./page.routes');
 const wishlistRoutes = require('./wishlist.routes');
 const reviewRoutes = require('./review.routes');
+const cartRoutes = require('./cart.routes');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -27,6 +28,7 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/pages', pageRoutes);
 router.use('/wishlist', wishlistRoutes);
+router.use('/cart', cartRoutes);
 router.use('/', reviewRoutes);
 
 // Health check
@@ -46,7 +48,8 @@ router.get('/health', (req, res) => {
             dashboard: '/api/v1/dashboard',
             upload: '/api/v1/upload',
             pages: '/api/v1/pages',
-            wishlist: '/api/v1/wishlist'
+            wishlist: '/api/v1/wishlist',
+            cart: '/api/v1/cart'
         }
     });
 });

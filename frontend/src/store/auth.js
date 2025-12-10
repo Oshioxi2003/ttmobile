@@ -27,11 +27,25 @@ function buildLoginPayload(credentials) {
 }
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null,
-    token: localStorage.getItem('token') || null,
-    isAuthenticated: !!localStorage.getItem('token')
-  }),
+  state: () => {
+    const token = localStorage.getItem('token')
+    const userStr = localStorage.getItem('user')
+    let user = null
+    
+    if (userStr) {
+      try {
+        user = JSON.parse(userStr)
+      } catch (e) {
+        console.error('Failed to parse user from localStorage:', e)
+      }
+    }
+    
+    return {
+      user,
+      token,
+      isAuthenticated: !!token
+    }
+  },
 
   getters: {
     getUser: (state) => state.user,
@@ -75,6 +89,11 @@ export const useAuthStore = defineStore('auth', {
           }
         }
         this.user = user
+        
+        // Lưu user vào localStorage
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user))
+        }
 
         return { success: true }
       } catch (error) {
@@ -112,6 +131,11 @@ export const useAuthStore = defineStore('auth', {
         // backend có thể trả về {data: user} hoặc {user}
         this.user = response.data?.data || response.data?.user || null
         this.isAuthenticated = true
+        
+        // Lưu user vào localStorage
+        if (this.user) {
+          localStorage.setItem('user', JSON.stringify(this.user))
+        }
       } catch (error) {
         this.logout()
       }
@@ -122,6 +146,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = null
       this.isAuthenticated = false
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
       delete api.defaults.headers.common['Authorization']
     }
   }

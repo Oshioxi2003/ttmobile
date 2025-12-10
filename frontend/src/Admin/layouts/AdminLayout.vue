@@ -23,14 +23,15 @@
         </button>
       </div>
 
-      <nav class="p-4 overflow-y-auto h-[calc(100%-72px)]">
+      <nav class="p-4 overflow-y-auto h-[calc(100%-72px)] relative pb-20">
         <ul class="space-y-2">
           <li>
             <router-link
               to="/"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path === '/' ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              exact
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path === '/' ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">📊</span> Dashboard
             </router-link>
@@ -38,9 +39,9 @@
           <li>
             <router-link
               to="/products"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path.startsWith('/products') ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/products') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">📱</span> Sản phẩm
             </router-link>
@@ -48,9 +49,9 @@
           <li>
             <router-link
               to="/users"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path.startsWith('/users') ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/users') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">👥</span> Người dùng
             </router-link>
@@ -58,9 +59,9 @@
           <li>
             <router-link
               to="/pages"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path.startsWith('/pages') ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/pages') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">📄</span> Trang tĩnh
             </router-link>
@@ -68,9 +69,9 @@
           <li>
             <router-link
               to="/menu-navbar"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path.startsWith('/menu-navbar') ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/menu-navbar') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">📋</span> Menu Navbar
             </router-link>
@@ -78,25 +79,52 @@
           <li>
             <router-link
               to="/banners"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path.startsWith('/banners') ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/banners') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">🖼️</span> Banners
+            </router-link>
+          </li>
+          <li>
+            <router-link
+              to="/categories"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/categories') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
+            >
+              <span class="mr-3">📦</span> Danh mục
             </router-link>
           </li>
 
           <li>
             <router-link
               to="/settings"
-              class="flex items-center px-4 py-2 rounded-xl transition-colors"
-              :class="$route.path.startsWith('/settings') ? 'bg-gray-700' : 'hover:bg-gray-800'"
-              @click="toggleMobile(false)"
+              class="flex items-center px-4 py-2 rounded-xl transition-all duration-200"
+              :class="$route.path.startsWith('/settings') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
+              @click="handleNavClick"
             >
               <span class="mr-3">⚙️</span> Cài đặt
             </router-link>
           </li>
         </ul>
+
+        <!-- Switch to Client Button -->
+        <div class="absolute bottom-4 left-4 right-4">
+          <a
+            href="/"
+            target="_blank"
+            class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-[#08A7B9] to-[#06919A] text-white font-medium hover:from-[#06919A] hover:to-[#057A82] transition-all shadow-lg hover:shadow-xl"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span>Xem trang Client</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+        </div>
       </nav>
     </aside>
 
@@ -119,15 +147,17 @@
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 p-4 lg:p-6">
-        <router-view />
+      <main class="flex-1 p-4 lg:p-6 overflow-auto">
+        <transition name="slide-fade" mode="out-in">
+          <router-view />
+        </transition>
       </main>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 
@@ -136,17 +166,72 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const mobileOpen = ref(false)
+const isNavigating = ref(false)
+
 const toggleMobile = (val = !mobileOpen.value) => {
   mobileOpen.value = val
 }
 
+// Watch route changes for loading state
+watch(() => route.path, () => {
+  isNavigating.value = false
+}, { immediate: true })
+
+// Handle navigation click
+const handleNavClick = () => {
+  isNavigating.value = true
+  toggleMobile(false)
+}
+
 const currentPageTitle = computed(() => {
-  return route.name || 'Dashboard'
+  const titles = {
+    'Dashboard': 'Tổng quan',
+    'Products': 'Quản lý sản phẩm',
+    'ProductCreate': 'Thêm sản phẩm mới',
+    'ProductEdit': 'Chỉnh sửa sản phẩm',
+    'Users': 'Quản lý người dùng',
+    'Pages': 'Quản lý trang',
+    'PageCreate': 'Thêm trang mới',
+    'PageEdit': 'Chỉnh sửa trang',
+    'Settings': 'Cài đặt hệ thống',
+    'MenuNavbar': 'Quản lý menu',
+    'Banners': 'Quản lý banners',
+    'Categories': 'Quản lý danh mục'
+  }
+  return titles[route.name] || route.name || 'Dashboard'
 })
 
 const handleLogout = () => {
-  authStore.logout()
-  router.push('/login')
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    authStore.logout()
+    router.push('/login')
+  }
 }
 </script>
+
+<style scoped>
+/* Smooth transitions */
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.15s ease-in;
+}
+
+.slide-fade-enter-from {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+/* Smooth scrolling */
+* {
+  scroll-behavior: smooth;
+}
+</style>
 

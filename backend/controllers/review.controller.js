@@ -10,13 +10,6 @@ exports.getProductReviews = async (req, res) => {
 
     const reviews = await Review.findAndCountAll({
       where: { productId: id },
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'username', 'fullName', 'email'],
-          required: false
-        }
-      ],
       order: [['createdAt', 'DESC']],
       limit: parseInt(limit),
       offset: parseInt(offset)
@@ -78,21 +71,10 @@ exports.createReview = async (req, res) => {
       comment
     });
 
-    // Fetch the created review with user info
-    const createdReview = await Review.findByPk(review.id, {
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'name', 'email'],
-          required: false
-        }
-      ]
-    });
-
     res.status(201).json({
       success: true,
       message: 'Review created successfully',
-      data: createdReview
+      data: review
     });
   } catch (error) {
     console.error('Error creating review:', error);

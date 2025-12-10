@@ -1,5 +1,11 @@
 <template>
-  <router-view />
+  <router-view v-slot="{ Component, route }">
+    <transition name="fade" mode="out-in">
+      <keep-alive :include="['Dashboard', 'Products', 'Users', 'Pages', 'Settings', 'Categories', 'Banners']">
+        <component :is="Component" :key="route.path" />
+      </keep-alive>
+    </transition>
+  </router-view>
 </template>
 
 <script setup>
@@ -12,11 +18,28 @@ const authStore = useAuthStore()
 
 onMounted(async () => {
   if (authStore.token) {
-    await authStore.fetchUser()
-    if (!authStore.isAdmin) {
+    try {
+      await authStore.fetchUser()
+      if (!authStore.isAdmin) {
+        router.push('/login')
+      }
+    } catch (error) {
+      console.error('Failed to fetch user:', error)
       router.push('/login')
     }
   }
 })
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
 

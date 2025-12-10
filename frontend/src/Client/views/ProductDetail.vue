@@ -702,8 +702,15 @@ const submitReview = async () => {
 
 const handleAddToWishlist = async () => {
   try {
-    await wishlistStore.add({ id: product.value.id, name: product.value.name, price: product.value.price, thumbnail: product.value.thumbnail || product.value.images?.[0] })
+    await wishlistStore.add({ 
+      id: product.value.id, 
+      name: product.value.name, 
+      price: product.value.price, 
+      thumbnail: product.value.thumbnail || product.value.images?.[0] 
+    })
+    alert('Đã thêm vào danh sách yêu thích')
   } catch (e) {
+    console.error('Add to wishlist error:', e)
     alert('Không thể thêm vào yêu thích')
   }
 }

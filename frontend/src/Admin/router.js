@@ -63,6 +63,11 @@ const routes = [
         path: 'banners',
         name: 'Banners',
         component: () => import('./views/Banners.vue')
+      },
+      {
+        path: 'categories',
+        name: 'Categories',
+        component: () => import('./views/Categories.vue')
       }
     ]
   },
@@ -83,32 +88,56 @@ const router = createRouter({
 })
 
 // Navigation guard with admin check
-router.beforeEach(async (to, _, next) => {
+let userFetchPromise = null
+
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
 
   // Public route: login
-  if (to.name === 'Login') return next()
+  if (to.name === 'Login') {
+    // If already logged in as admin, redirect to dashboard
+    if (authStore.token && authStore.user && authStore.isAdmin) {
+      return next('/')
+    }
+    return next()
+  }
 
   // Need auth for everything else
   if (to.meta.requiresAuth) {
     if (!authStore.token) {
       return next('/login')
     }
+    
     try {
-      // Fetch user once if not loaded yet
+      // Fetch user once if not loaded yet, reuse promise to avoid duplicate requests
       if (!authStore.user) {
-        await authStore.fetchUser()
+        if (!userFetchPromise) {
+          userFetchPromise = authStore.fetchUser().finally(() => {
+            userFetchPromise = null
+          })
+        }
+        await userFetchPromise
       }
+      
       if (!authStore.isAdmin) {
+        authStore.logout()
         return next('/login')
       }
+      
       return next()
-    } catch (_) {
+    } catch (error) {
+      console.error('Auth check failed:', error)
+      authStore.logout()
       return next('/login')
     }
   }
 
   next()
+})
+
+// Add scroll behavior for smooth navigation
+router.afterEach(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 })
 
 export default router

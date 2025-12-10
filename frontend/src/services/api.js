@@ -55,7 +55,6 @@ api.interceptors.response.use(
     // Không redirect khi đang gọi API đăng nhập để hiển thị lỗi đúng
     const isLoginRequest = /\/auth\/login/i.test(reqUrl)
 
-    // Handle 401 Unauthorized
     if (status === 401 && !isLoginRequest) {
       // Không redirect nếu request công khai hoặc không có token
       const skip = config?.skipAuthRedirect === true
@@ -67,30 +66,7 @@ api.interceptors.response.use(
       const currentPath = window.location.pathname || ''
       const isAdminApp = currentPath.startsWith('/admin')
       window.location.href = isAdminApp ? '/admin/login' : '/login'
-      return Promise.reject(error)
     }
-
-    // Handle 403 Forbidden
-    if (status === 403) {
-      const currentPath = window.location.pathname || ''
-      const isAdminApp = currentPath.startsWith('/admin')
-      if (!isAdminApp) {
-        window.location.href = '/403'
-      }
-      return Promise.reject(error)
-    }
-
-    // Handle 500 Server Error
-    if (status === 500) {
-      const currentPath = window.location.pathname || ''
-      const isAdminApp = currentPath.startsWith('/admin')
-      const isAlreadyOnErrorPage = currentPath.includes('/500')
-      if (!isAdminApp && !isAlreadyOnErrorPage) {
-        window.location.href = '/500'
-      }
-      return Promise.reject(error)
-    }
-
     return Promise.reject(error)
   }
 )

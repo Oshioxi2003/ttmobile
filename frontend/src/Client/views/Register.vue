@@ -1,20 +1,30 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-background py-12 px-4">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
     <div class="max-w-md w-full">
+      <!-- Back to Home Button -->
+      <div class="mb-6">
+        <router-link to="/" class="inline-flex items-center text-gray-600 hover:text-[#08A7B9] transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Về trang chủ
+        </router-link>
+      </div>
+      
       <!-- Logo -->
       <div class="text-center mb-8">
         <router-link to="/" class="inline-block">
-          <span class="text-3xl font-bold text-primary tracking-tight">T&T MOBILE</span>
+          <span class="text-3xl font-bold text-[#08A7B9] tracking-tight">T&T MOBILE</span>
         </router-link>
-        <p class="mt-3 text-text-muted">Tạo tài khoản mới</p>
+        <p class="mt-3 text-gray-600">Tạo tài khoản mới</p>
       </div>
 
       <!-- Register Form -->
-      <div class="bg-white p-8 shadow-card">
+      <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
         <form @submit.prevent="handleRegister" class="space-y-4">
           <!-- Full Name -->
           <div>
-            <label class="block text-sm font-semibold mb-2 text-text">Họ và tên <span class="text-primary">*</span></label>
+            <label class="block text-sm font-semibold mb-2 text-gray-800">Họ và tên <span class="text-[#08A7B9]">*</span></label>
             <input
               v-model="form.fullName"
               type="text"
@@ -26,11 +36,11 @@
 
           <!-- Username -->
           <div>
-            <label class="block text-sm font-semibold mb-2 text-text">Tên đăng nhập <span class="text-primary">*</span></label>
+            <label class="block text-sm font-semibold mb-2 text-gray-800">Tên đăng nhập <span class="text-[#08A7B9]">*</span></label>
             <input
               v-model="form.username"
               type="text"
-              class="input"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#08A7B9] focus:border-transparent outline-none"
               placeholder="username123"
               required
             >
@@ -38,11 +48,11 @@
 
           <!-- Email -->
           <div>
-            <label class="block text-sm font-semibold mb-2 text-text">Email <span class="text-primary">*</span></label>
+            <label class="block text-sm font-semibold mb-2 text-gray-800">Email <span class="text-[#08A7B9]">*</span></label>
             <input
               v-model="form.email"
               type="email"
-              class="input"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#08A7B9] focus:border-transparent outline-none"
               placeholder="example@email.com"
               required
             >
@@ -50,7 +60,7 @@
 
           <!-- Phone -->
           <div>
-            <label class="block text-sm font-semibold mb-2 text-text">Số điện thoại</label>
+            <label class="block text-sm font-semibold mb-2 text-gray-800">Số điện thoại</label>
             <input
               v-model="form.phone"
               type="tel"
@@ -61,12 +71,12 @@
 
           <!-- Password -->
           <div>
-            <label class="block text-sm font-semibold mb-2 text-text">Mật khẩu <span class="text-primary">*</span></label>
+            <label class="block text-sm font-semibold mb-2 text-gray-800">Mật khẩu <span class="text-[#08A7B9]">*</span></label>
             <div class="relative">
               <input
                 v-model="form.password"
                 :type="showPassword ? 'text' : 'password'"
-                class="input pr-12"
+                class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#08A7B9] focus:border-transparent outline-none"
                 placeholder="Tối thiểu 8 ký tự"
                 required
                 minlength="8"
@@ -74,7 +84,7 @@
               <button
                 type="button"
                 @click="showPassword = !showPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
               >
                 <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -89,11 +99,11 @@
 
           <!-- Confirm Password -->
           <div>
-            <label class="block text-sm font-semibold mb-2 text-text">Xác nhận mật khẩu <span class="text-primary">*</span></label>
+            <label class="block text-sm font-semibold mb-2 text-gray-800">Xác nhận mật khẩu <span class="text-[#08A7B9]">*</span></label>
             <input
               v-model="form.confirmPassword"
               type="password"
-              class="input"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#08A7B9] focus:border-transparent outline-none"
               placeholder="Nhập lại mật khẩu"
               required
             >
@@ -101,12 +111,12 @@
 
           <!-- Terms -->
           <div class="flex items-start">
-            <input type="checkbox" v-model="form.agreeTerms" class="mt-1 mr-2 accent-primary" required>
-            <span class="text-sm text-text-muted">
+            <input type="checkbox" v-model="form.agreeTerms" class="mt-1 mr-2 accent-[#08A7B9]" required>
+            <span class="text-sm text-gray-600">
               Tôi đồng ý với
-              <a href="#" class="text-secondary hover:text-secondary-hover">Điều khoản dịch vụ</a>
+              <a href="#" class="text-[#08A7B9] hover:underline">Điều khoản dịch vụ</a>
               và
-              <a href="#" class="text-secondary hover:text-secondary-hover">Chính sách bảo mật</a>
+              <a href="#" class="text-[#08A7B9] hover:underline">Chính sách bảo mật</a>
             </span>
           </div>
 
@@ -119,7 +129,7 @@
           <button
             type="submit"
             :disabled="loading"
-            class="btn btn-primary w-full py-4"
+            class="w-full py-4 bg-[#08A7B9] hover:bg-[#07969F] text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="loading" class="flex items-center justify-center">
               <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -133,9 +143,9 @@
         </form>
 
         <!-- Login Link -->
-        <p class="mt-6 text-center text-sm text-text-muted">
+        <p class="mt-6 text-center text-sm text-gray-600">
           Đã có tài khoản?
-          <router-link to="/login" class="text-secondary hover:text-secondary-hover font-semibold">Đăng nhập</router-link>
+          <router-link to="/login" class="text-[#08A7B9] hover:underline font-semibold">Đăng nhập</router-link>
         </p>
       </div>
     </div>
@@ -145,10 +155,10 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
+import axios from 'axios'
 
 const router = useRouter()
-const authStore = useAuthStore()
+const apiUrl = import.meta.env.VITE_API_URL || '/api/v1'
 
 const showPassword = ref(false)
 const loading = ref(false)
@@ -180,14 +190,22 @@ const handleRegister = async () => {
   loading.value = true
 
   try {
-    const result = await authStore.register(form)
-    if (result.success) {
+    const response = await axios.post(`${apiUrl}/auth/register`, {
+      full_name: form.fullName,
+      username: form.username,
+      email: form.email,
+      phone: form.phone,
+      password: form.password
+    })
+    
+    if (response.data.success) {
+      alert('Đăng ký thành công! Vui lòng đăng nhập.')
       router.push('/login')
     } else {
-      error.value = result.message || 'Đăng ký thất bại. Vui lòng thử lại.'
+      error.value = response.data.message || 'Đăng ký thất bại. Vui lòng thử lại.'
     }
   } catch (err) {
-    error.value = 'Có lỗi xảy ra. Vui lòng thử lại sau.'
+    error.value = err.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.'
   } finally {
     loading.value = false
   }

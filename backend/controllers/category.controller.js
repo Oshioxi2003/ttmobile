@@ -68,7 +68,14 @@ class CategoryController {
     // Create category
     async create(req, res) {
         try {
-            const category = await categoryService.createCategory(req.body);
+            const categoryData = { ...req.body };
+            
+            // Handle file upload
+            if (req.file) {
+                categoryData.image = '/uploads/categories/' + req.file.filename;
+            }
+            
+            const category = await categoryService.createCategory(categoryData);
             res.status(201).json({
                 success: true,
                 message: 'Category created successfully',
@@ -86,7 +93,14 @@ class CategoryController {
     // Update category
     async update(req, res) {
         try {
-            const category = await categoryService.updateCategory(req.params.id, req.body);
+            const categoryData = { ...req.body };
+            
+            // Handle file upload
+            if (req.file) {
+                categoryData.image = '/uploads/categories/' + req.file.filename;
+            }
+            
+            const category = await categoryService.updateCategory(req.params.id, categoryData);
             if (!category) {
                 return res.status(404).json({
                     success: false,

@@ -10,22 +10,28 @@ const routes = [
       { path: 'products', name: 'Products', component: () => import('./views/Products.vue') },
       { path: 'products/:id', name: 'ProductDetail', component: () => import('./views/ProductDetail.vue') },
       { path: 'collections/:slug', name: 'Collection', component: () => import('./views/Products.vue') },
+      
+      // Static pages with custom layouts
+      { path: 'pages/about-us', name: 'AboutUs', component: () => import('./views/AboutUs.vue') },
+      { path: 'pages/privacy-policy', name: 'PrivacyPolicy', component: () => import('./views/PrivacyPolicy.vue') },
+      { path: 'pages/shipping-policy', name: 'ShippingPolicy', component: () => import('./views/ShippingPolicy.vue') },
+      { path: 'pages/refund-policy', name: 'RefundPolicy', component: () => import('./views/RefundPolicy.vue') },
+      
+      // Dynamic pages from database
       { path: 'pages/:slug(.*)*', name: 'Page', component: () => import('./views/Page.vue') },
       { path: 'policies/:slug(.*)*', name: 'Policy', component: () => import('./views/Page.vue') },
-      // { path: 'checkout', name: 'Checkout', component: () => import('./views/Checkout.vue'), meta: { requiresAuth: true } },
-      { path: 'profile', name: 'Profile', component: () => import('./views/Profile.vue'), meta: { requiresAuth: true } },
-      { path: 'wishlist', name: 'Wishlist', component: () => import('./views/Wishlist.vue'), meta: { requiresAuth: true } },
       
-      // Error pages
-      { path: '403', name: 'Error403', component: () => import('./views/Error403.vue') },
-      { path: '500', name: 'Error500', component: () => import('./views/Error500.vue') }
+      // Cart
+      { path: 'cart', name: 'Cart', component: () => import('./views/Checkout.vue') },
+      
+      { path: 'profile', name: 'Profile', component: () => import('./views/Profile.vue'), meta: { requiresAuth: true } },
+      { path: 'wishlist', name: 'Wishlist', component: () => import('./views/Wishlist.vue') }
     ]
   },
   { path: '/login', name: 'Login', component: () => import('./views/Login.vue') },
   { path: '/register', name: 'Register', component: () => import('./views/Register.vue') },
-  
-  // 404 - Must be last
-  { path: '/:pathMatch(.*)*', name: 'Error404', component: () => import('./views/Error404.vue') }
+  // Optional catch-all: redirect anything unknown to home
+  { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({

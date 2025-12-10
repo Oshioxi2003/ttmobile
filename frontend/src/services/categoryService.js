@@ -19,6 +19,25 @@ export const categoryService = {
   // Lấy sản phẩm theo danh mục
   getCategoryProducts: (id, params = {}) => {
     return api.get(`/categories/${id}/products`, { params })
+  },
+
+  // Tạo danh mục mới (Admin)
+  createCategory: (data) => {
+    return api.post('/categories', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
+
+  // Cập nhật danh mục (Admin)
+  updateCategory: (id, data) => {
+    return api.put(`/categories/${id}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
+
+  // Xóa danh mục (Admin)
+  deleteCategory: (id) => {
+    return api.delete(`/categories/${id}`)
   }
 }
 

@@ -26,8 +26,14 @@
             </span>
           </div>
           <div class="flex items-center space-x-4">
-            <router-link to="/login" class="hover:opacity-80">Đăng nhập</router-link>
-            <router-link to="/register" class="hover:opacity-80">Đăng ký</router-link>
+            <template v-if="isLoggedIn">
+              <span class="text-gray-900 font-medium">Xin chào, <span class="text-[#000]">{{ userName }}</span></span>
+              <button @click="handleLogout" class="text-gray-900 hover:text-red-600 font-medium transition-colors">Đăng xuất</button>
+            </template>
+            <template v-else>
+              <router-link to="/login" class="text-gray-900 hover:text-[#08A7B9] font-medium transition-colors">Đăng nhập</router-link>
+              <router-link to="/register" class="text-gray-900 hover:text-[#08A7B9] font-medium transition-colors">Đăng ký</router-link>
+            </template>
           </div>
         </div>
       </div>
@@ -82,7 +88,7 @@
             </router-link>
 
             <!-- Cart -->
-            <router-link to="/checkout" class="relative p-2 hover:text-primary transition-colors">
+            <router-link to="/cart" class="relative p-2 hover:text-primary transition-colors">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
               </svg>
@@ -198,6 +204,56 @@
       <router-view />
     </main>
 
+    <!-- Floating Contact Buttons -->
+    <div class="fixed right-4 bottom-4 z-40 flex flex-col gap-3">
+     
+      
+
+      <!-- Facebook Button -->
+      <a 
+        v-if="siteSettings.facebook_url"
+        :href="siteSettings.facebook_url" 
+        target="_blank"
+        class="floating-btn floating-btn-facebook group"
+        aria-label="Facebook"
+      >
+        <svg class="w-7 h-7" fill="white" viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+        <span class="floating-btn-tooltip">Facebook</span>
+      </a>
+
+      <!-- Zalo Button -->
+      <a 
+        :href="zaloHref" 
+        target="_blank"
+        class="floating-btn floating-btn-zalo group"
+        aria-label="Chat Zalo"
+      >
+        <svg class="w-7 h-7" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#2962ff" d="M15,36V6.827l-1.211-0.811C8.64,8.083,5,13.112,5,19v10c0,7.732,6.268,14,14,14h10c4.722,0,8.883-2.348,11.417-5.931V36H15z"></path>
+          <path fill="#eee" d="M29,5H19c-1.845,0-3.601,0.366-5.214,1.014C10.453,9.25,8,14.528,8,19c0,6.771,0.936,10.735,3.712,14.607c0.216,0.301,0.357,0.653,0.376,1.022c0.043,0.835-0.129,2.365-1.634,3.742c-0.162,0.148-0.059,0.419,0.16,0.428c0.942,0.041,2.843-0.014,4.797-0.877c0.557-0.246,1.191-0.203,1.729,0.083C20.453,39.764,24.333,40,28,40c4.676,0,9.339-1.04,12.417-2.916C42.038,34.799,43,32.014,43,29V19C43,11.268,36.732,5,29,5z"></path>
+          <path fill="#2962ff" d="M36.75,27C34.683,27,33,25.317,33,23.25s1.683-3.75,3.75-3.75s3.75,1.683,3.75,3.75S38.817,27,36.75,27z M36.75,21c-1.24,0-2.25,1.01-2.25,2.25s1.01,2.25,2.25,2.25S39,24.49,39,23.25S37.99,21,36.75,21z"></path>
+          <path fill="#2962ff" d="M31.5,27h-1c-0.276,0-0.5-0.224-0.5-0.5V18h1.5V27z"></path>
+          <path fill="#2962ff" d="M27,19.75v0.519c-0.629-0.476-1.403-0.769-2.25-0.769c-2.067,0-3.75,1.683-3.75,3.75S22.683,27,24.75,27c0.847,0,1.621-0.293,2.25-0.769V26.5c0,0.276,0.224,0.5,0.5,0.5h1v-7.25H27z M24.75,25.5c-1.24,0-2.25-1.01-2.25-2.25S23.51,21,24.75,21S27,22.01,27,23.25S25.99,25.5,24.75,25.5z"></path>
+          <path fill="#2962ff" d="M21.25,18h-8v1.5h5.321L13,26h0.026c-0.163,0.211-0.276,0.463-0.276,0.75V27h7.5c0.276,0,0.5-0.224,0.5-0.5v-1h-5.321L21,19h-0.026c0.163-0.211,0.276-0.463,0.276-0.75V18z"></path>
+        </svg>
+        <span class="floating-btn-tooltip">Chat Zalo</span>
+      </a>
+
+      <!-- Phone Button -->
+      <a 
+        :href="`tel:${siteSettings.contact_phone || '0379640501'}`"
+        class="floating-btn floating-btn-phone group"
+        aria-label="Gọi điện"
+      >
+        <svg class="w-7 h-7" fill="white" viewBox="0 0 24 24">
+          <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+        </svg>
+        <span class="floating-btn-tooltip">Gọi ngay</span>
+      </a>
+    </div>
+
     <!-- Footer -->
     <footer class="footer py-12">
       <div class="container-custom">
@@ -222,14 +278,15 @@
             </div>
           </div>
 
-          <!-- Quick Links / Footer Pages Column 1 -->
-          <div>
+          <!-- Categories - Auto-generated from database -->
+          <div v-if="footerCategories.length > 0">
             <h4 class="footer-heading">Danh mục</h4>
             <ul class="space-y-2 text-sm">
-              <li><router-link to="/collections/iphone" class="text-text hover:text-primary">iPhone</router-link></li>
-              <li><router-link to="/collections/samsung" class="text-text hover:text-primary">Samsung</router-link></li>
-              <li><router-link to="/collections/smartwatch" class="text-text hover:text-primary">Đồng hồ thông minh</router-link></li>
-              <li><router-link to="/collections/accessories" class="text-text hover:text-primary">Phụ kiện</router-link></li>
+              <li v-for="category in footerCategories" :key="category.id">
+                <router-link :to="`/collections/${category.slug}`" class="text-text hover:text-primary">
+                  {{ category.name }}
+                </router-link>
+              </li>
             </ul>
           </div>
 
@@ -248,17 +305,17 @@
           <!-- Support / Footer Pages Column 2 -->
           <div>
             <h4 class="footer-heading">Hỗ trợ</h4>
-            <ul class="space-y-2 text-sm">
-              <li><router-link to="/pages/about" class="text-text hover:text-primary">Về chúng tôi</router-link></li>
-              <li><a href="#" class="text-text hover:text-primary">Liên hệ</a></li>
-              <li><a href="#" class="text-text hover:text-primary">Chính sách bảo hành</a></li>
-              <li><router-link to="/policies/refund-policy" class="text-text hover:text-primary">Chính sách đổi trả</router-link></li>
+            <!-- <ul class="space-y-2 text-sm">
+              <li><router-link to="/pages/about-us" class="text-text hover:text-primary">Về chúng tôi</router-link></li>
+              <li><router-link to="/pages/privacy-policy" class="text-text hover:text-primary">Chính sách bảo mật</router-link></li>
+              <li><router-link to="/pages/shipping-policy" class="text-text hover:text-primary">Chính sách vận chuyển</router-link></li>
+              <li><router-link to="/pages/refund-policy" class="text-text hover:text-primary">Chính sách đổi trả</router-link></li>
               <li v-for="page in footerPagesCol2" :key="page.id">
                 <router-link :to="`/pages/${page.slug}`" class="text-text hover:text-primary">
                   {{ page.title }}
                 </router-link>
               </li>
-            </ul>
+            </ul> -->
           </div>
 
           <!-- Contact -->
@@ -296,24 +353,8 @@
 
         <!-- Bottom -->
         <div class="border-t border-border mt-10 pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-text-light">
-          <p>&copy; 2024 {{ siteSettings.site_name }}. All rights reserved.</p>
-          <div class="flex items-center space-x-4 mt-4 md:mt-0">
-            <!-- Payment Icons (SVG inline) -->
-            <svg class="h-8" viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="50" height="32" rx="4" fill="#1A1F71"/>
-              <path d="M21.5 21H19L20.5 11H23L21.5 21ZM17.5 11L15.1 18L14.8 16.5L14 12C14 12 13.9 11 12.5 11H8.1L8 11.2C8 11.2 9.6 11.5 11.4 12.6L13.5 21H16.1L20 11H17.5ZM35.5 21H38L35.8 11H33.8C32.6 11 32.3 12 32.3 12L28.5 21H31.1L31.6 19.5H34.8L35.5 21ZM32.3 17.5L33.7 13.5L34.5 17.5H32.3ZM29.5 13.5L29.8 12C29.8 12 28.5 11.5 27.1 11.5C25.6 11.5 22.5 12.2 22.5 15C22.5 17.6 26 17.6 26 19C26 20.4 22.8 20 21.5 19L21.1 20.6C21.1 20.6 22.5 21.2 24.5 21.2C26.5 21.2 29.5 20 29.5 17.5C29.5 14.9 26 14.7 26 13.5C26 12.3 28.5 12.5 29.5 13.5Z" fill="white"/>
-            </svg>
-            <svg class="h-8" viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="50" height="32" rx="4" fill="#F5F5F5"/>
-              <circle cx="20" cy="16" r="10" fill="#EB001B"/>
-              <circle cx="30" cy="16" r="10" fill="#F79E1B"/>
-              <path d="M25 8.5C27.4 10.3 29 13 29 16C29 19 27.4 21.7 25 23.5C22.6 21.7 21 19 21 16C21 13 22.6 10.3 25 8.5Z" fill="#FF5F00"/>
-            </svg>
-            <svg class="h-8" viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="50" height="32" rx="4" fill="#003087"/>
-              <path d="M19.5 12H16.5C16.2 12 16 12.2 15.9 12.5L14.5 20.5C14.5 20.7 14.6 20.8 14.8 20.8H16.2C16.5 20.8 16.7 20.6 16.8 20.3L17.2 17.8C17.2 17.5 17.5 17.3 17.8 17.3H18.9C21 17.3 22.2 16.2 22.5 14.2C22.6 13.3 22.5 12.6 22.1 12.1C21.6 11.5 20.7 12 19.5 12ZM19.9 14.3C19.7 15.6 18.8 15.6 17.9 15.6H17.4L17.8 13.3C17.8 13.2 17.9 13.1 18 13.1H18.3C18.9 13.1 19.5 13.1 19.8 13.5C20 13.7 20 14 19.9 14.3ZM28.5 14.2H27.1C27 14.2 26.9 14.3 26.9 14.4L26.8 14.8L26.7 14.6C26.4 14.2 25.7 14 25.1 14C23.3 14 21.8 15.4 21.5 17.3C21.3 18.2 21.5 19.1 22 19.7C22.5 20.3 23.2 20.5 24 20.5C25.3 20.5 26 19.7 26 19.7L25.9 20.1C25.9 20.3 26 20.4 26.2 20.4H27.4C27.7 20.4 27.9 20.2 28 19.9L28.8 14.5C28.9 14.4 28.7 14.2 28.5 14.2ZM26.4 17.4C26.2 18.3 25.5 18.9 24.6 18.9C24.2 18.9 23.8 18.7 23.6 18.5C23.4 18.2 23.3 17.8 23.4 17.4C23.5 16.5 24.3 15.9 25.1 15.9C25.5 15.9 25.9 16.1 26.1 16.3C26.4 16.6 26.5 17 26.4 17.4ZM35.5 14.2H34.1C33.9 14.2 33.8 14.3 33.7 14.5L31.7 17.5L30.9 14.6C30.8 14.3 30.6 14.2 30.3 14.2H28.9C28.7 14.2 28.6 14.4 28.6 14.6L30.1 19.7L28.7 21.6C28.6 21.8 28.7 22 28.9 22H30.3C30.5 22 30.6 21.9 30.7 21.8L35.7 14.7C35.9 14.4 35.7 14.2 35.5 14.2Z" fill="white"/>
-            </svg>
-          </div>
+          <p>&copy; 2025 {{ siteSettings.site_name }}. All rights reserved.</p>
+          
         </div>
       </div>
     </footer>
@@ -437,6 +478,41 @@ const zaloHref = computed(() => {
 const cartCount = computed(() => cartStore.itemCount)
 const wishlistCount = computed(() => wishlistStore.count)
 
+// Auth state
+const isLoggedIn = ref(false)
+const userName = ref('')
+
+const checkAuthState = () => {
+  const token = localStorage.getItem('token')
+  const userStr = localStorage.getItem('user')
+  
+  if (token && userStr) {
+    try {
+      const user = JSON.parse(userStr)
+      isLoggedIn.value = true
+      userName.value = user.full_name || user.username || user.email || 'Khách'
+    } catch (e) {
+      isLoggedIn.value = false
+      userName.value = ''
+    }
+  } else {
+    isLoggedIn.value = false
+    userName.value = ''
+  }
+}
+
+const handleLogout = () => {
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    isLoggedIn.value = false
+    userName.value = ''
+    cartStore.clearCart()
+    wishlistStore.clear()
+    router.push('/')
+  }
+}
+
 // Search functionality
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
@@ -448,8 +524,10 @@ const handleSearch = () => {
   }
 }
 
-// Footer pages from Pages.vue integration
+// Footer data
 const footerPages = ref([])
+const footerCategories = ref([])
+
 const footerPagesCol1 = computed(() => {
   const pages = Array.isArray(footerPages.value) ? footerPages.value : []
   return pages.filter(p => p.footerColumn === 1 || p.footerColumn === '1').sort((a, b) => (a.footerOrder || 999) - (b.footerOrder || 999))
@@ -477,37 +555,156 @@ const loadFooterPages = async () => {
   }
 }
 
+const loadFooterCategories = async () => {
+  try {
+    const res = await categoryService.getCategories()
+    const allCategories = res.data?.data || []
+    // Only show active top-level categories (or first 6 categories) in footer
+    footerCategories.value = allCategories
+      .filter(c => c.isActive !== false && !c.parentId)
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+      .slice(0, 6)
+  } catch (e) {
+    console.error('Failed to load footer categories:', e)
+    footerCategories.value = []
+  }
+}
+
 onMounted(async () => {
-  // Preload public settings (cached) to avoid redundant requests
-  try { await settingStore.fetch() } catch {}
-  // Load site settings
+  // Check auth state
+  checkAuthState()
+  
+  // Load site settings once (uses settingStore internally with cache)
   await loadSettings()
-
-  // Try to load NAV from public site settings (site.nav_config) to avoid hitting admin-only endpoint
+  // Load footer data from admin (non-blocking)
   try {
-    const raw = siteSettings.value?.nav_config || settingStore.get?.('nav_config', '[]') || '[]'
-    try { navConfig.value = JSON.parse(raw || '[]') } catch { navConfig.value = [] }
-  } catch {}
-
-  // Load categories for auto-generated collections in nav
-  try {
-    const catRes = await categoryService.getCategories()
-    categories.value = catRes.data?.data || []
-  } catch {}
-
-  // Contact/social come from settingStore.fetch() via useSiteSettings; avoid duplicate direct calls
-
-  // Load footer pages from admin Pages management (non-blocking)
-  try {
-    await loadFooterPages()
+    await Promise.all([
+      loadFooterPages(),
+      loadFooterCategories()
+    ])
   } catch (error) {
-    console.error('Error loading footer pages:', error)
+    console.error('Error loading footer data:', error)
   }
 
-  // Try to load wishlist if user is authenticated
-  if (localStorage.getItem('token')) {
-    wishlistStore.fetch().catch(() => {})
+  // Try to load cart and wishlist if user is authenticated
+  const token = localStorage.getItem('token')
+  if (token && isLoggedIn.value) {
+    try {
+      await cartStore.fetchCart()
+    } catch (error) {
+      console.log('Cart not available')
+    }
+    try {
+      await wishlistStore.syncToServer()
+    } catch (error) {
+      console.log('Wishlist sync not available')
+    }
+  } else {
+    // Load wishlist from localStorage for non-authenticated users
+    wishlistStore.fetch()
   }
 })
 </script>
+
+<style scoped>
+/* Floating Contact Buttons */
+.floating-btn {
+  @apply w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white transition-all duration-300 relative;
+}
+
+.floating-btn-facebook {
+  @apply bg-blue-700;
+}
+
+.floating-btn-admin {
+  @apply bg-gray-800;
+}
+
+.floating-btn-zalo {
+  @apply bg-white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.floating-btn-phone {
+  @apply bg-green-600;
+}
+
+/* Shake animation on hover */
+.floating-btn:hover {
+  @apply shadow-2xl scale-110;
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) scale(1.1); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px) scale(1.1); }
+  20%, 40%, 60%, 80% { transform: translateX(3px) scale(1.1); }
+}
+
+/* Tooltip */
+.floating-btn-tooltip {
+  @apply absolute right-full mr-3 px-3 py-1 bg-gray-900 text-white text-sm rounded whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200;
+}
+
+.floating-btn:hover .floating-btn-tooltip {
+  @apply opacity-100;
+}
+
+/* Pulse effect */
+.floating-btn::before {
+  content: '';
+  @apply absolute inset-0 rounded-full opacity-0 transition-opacity duration-300;
+}
+
+.floating-btn-facebook::before {
+  @apply bg-blue-500;
+  animation: pulse-facebook 2s infinite;
+}
+
+.floating-btn-admin::before {
+  @apply bg-gray-600;
+  animation: pulse-admin 2s infinite;
+}
+
+.floating-btn-zalo::before {
+  background: #2962ff;
+  animation: pulse-zalo 2s infinite;
+}
+
+.floating-btn-phone::before {
+  @apply bg-green-400;
+  animation: pulse-phone 2s infinite;
+}
+
+@keyframes pulse-facebook {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.15); }
+}
+
+@keyframes pulse-admin {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.15); }
+}
+
+@keyframes pulse-zalo {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.15); }
+}
+
+@keyframes pulse-phone {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.15); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .floating-btn {
+    @apply w-12 h-12;
+  }
+  
+  .floating-btn svg {
+    @apply w-6 h-6;
+  }
+}
+</style>
 

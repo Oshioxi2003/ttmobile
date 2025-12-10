@@ -38,11 +38,7 @@ app.use(helmet({
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
         ? (process.env.ALLOWED_ORIGINS || '').split(',')
-        : [
-            
-            'https://rs1rgfxz-3000.asse.devtunnels.ms',
-            'https://rs1rgfxz-5173.asse.devtunnels.ms'
-          ],
+        : ['https://rs1rgfxz-3000.asse.devtunnels.ms', 'https://rs1rgfxz-5173.asse.devtunnels.ms', 'http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -53,25 +49,33 @@ app.use(cors(corsOptions));
 // Rate limiting - General API
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // 100 requests per window
+    max: 5000, // 500 requests per window (increased for normal usage)
     message: {
         success: false,
         message: 'Too many requests, please try again later.'
     },
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => {
+        // Skip rate limiting for static file requests
+        return req.path.startsWith('/uploads');
+    }
 });
 
 // Rate limiting - Auth routes (stricter)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 attempts per window
+    max: 10, // 10 attempts per window (increased slightly)
     message: {
         success: false,
         message: 'Too many login attempts, please try again after 15 minutes.'
     },
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => {
+        // Skip rate limiting for /auth/me (user info fetch)
+        return req.path.endsWith('/auth/me');
+    }
 });
 
 // Apply rate limiting

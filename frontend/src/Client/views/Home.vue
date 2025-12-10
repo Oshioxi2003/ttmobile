@@ -19,25 +19,25 @@
         </div>
 
         <!-- Split grid -->
-        <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:h-[400px]">
           <!-- Left big banner (2 cols if right banners exist, else span all 3) -->
           <a
             v-if="leftBanner"
             :href="leftBanner.link || '#'"
-            :class="[rightSmallBanners.length ? 'lg:col-span-2' : 'lg:col-span-3', 'block rounded-lg overflow-hidden shadow-card hover:shadow-lg transition-shadow bg-gray-100 relative group']"
+            :class="[rightSmallBanners.length ? 'lg:col-span-2' : 'lg:col-span-3', 'block rounded-lg overflow-hidden shadow-card hover:shadow-lg transition-shadow bg-gray-100 relative group h-64 lg:h-full']"
             :aria-label="leftBanner.title || 'Banner'"
           >
-            <div class="relative w-full h-64 md:h-80 lg:h-[400px] overflow-hidden">
+            <div class="relative w-full h-full overflow-hidden">
               <component :is="isVideo(leftBanner.image) ? 'video' : 'img'"
                          :src="asset(leftBanner.image)"
                          :alt="leftBanner.title || 'banner image'"
-                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                         class="w-full h-full object-fill group-hover:scale-105 transition-transform duration-300"
                          v-bind="isVideo(leftBanner.image) ? { autoplay: true, muted: true, loop: true, playsinline: true } : {}" />
             </div>
           </a>
 
           <!-- Right two small banners (admin-configurable) -->
-          <div v-if="rightSmallBanners.length" class="flex flex-col gap-4">
+          <div v-if="rightSmallBanners.length" class="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:h-full">
             <template v-for="(b, i) in rightSmallBanners" :key="i">
               <!-- Clickable wrapper chooses router-link for internal links, <a> for external, or <div> when no link -->
               <component
@@ -46,16 +46,16 @@
                 :href="isExternal(b.link || '') ? b.link : undefined"
                 :target="isExternal(b.link || '') && (b.openInNewTab ?? true) ? '_blank' : undefined"
                 :rel="isExternal(b.link || '') && (b.openInNewTab ?? true) ? 'noopener' : undefined"
-                class="block rounded-lg overflow-hidden shadow-card hover:shadow-lg transition-shadow bg-gray-100 relative group flex-1"
+                class="block rounded-lg overflow-hidden shadow-card hover:shadow-lg transition-shadow bg-gray-100 relative group h-48 lg:h-full"
                 :aria-label="`Mở banner: ${b.title || (i===0?'Small Banner 1':'Small Banner 2')}`"
               >
-                <div class="relative w-full h-full min-h-[192px] lg:h-[196px] overflow-hidden">
+                <div class="relative w-full h-full overflow-hidden">
                   <img
                     :src="asset(b.image)"
                     :alt="b.title || (i===0?'Small Banner 1':'Small Banner 2')"
                     loading="lazy"
                     decoding="async"
-                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    class="w-full h-full object-fill group-hover:scale-105 transition-transform duration-300"
                     @error="onImgErr"
                   />
                 </div>
@@ -69,63 +69,43 @@
     <!-- Categories -->
     <section class="py-8 bg-white">
       <div class="container-custom">
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <router-link to="/products?brand=iphone" class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg">
-            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2">
-              <svg class="w-8 h-8 text-text" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        <div v-if="loadingCategories" class="flex justify-center py-8">
+          <div class="inline-block animate-spin">
+            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+          </div>
+        </div>
+        <div v-else class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <router-link
+            v-for="category in categories"
+            :key="category.id"
+            :to="`/products?category=${category.id}`"
+            class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg"
+          >
+            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2 overflow-hidden">
+              <img
+                v-if="category.image"
+                :src="asset(category.image)"
+                :alt="category.name"
+                class="w-full h-full object-cover"
+              />
+              <svg v-else class="w-8 h-8 text-text" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
               </svg>
             </div>
-            <span class="text-sm font-semibold text-center">iPhone</span>
-          </router-link>
-          <router-link to="/products?brand=samsung" class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg">
-            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2">
-              <svg class="w-8 h-8 text-text" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M5.5 2C4.12 2 3 3.12 3 4.5v15C3 20.88 4.12 22 5.5 22h13c1.38 0 2.5-1.12 2.5-2.5v-15C21 3.12 19.88 2 18.5 2h-13zM12 20c-.83 0-1.5-.67-1.5-1.5S11.17 17 12 17s1.5.67 1.5 1.5S12.83 20 12 20z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-semibold text-center">Samsung</span>
-          </router-link>
-          <router-link to="/products?brand=xiaomi" class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg">
-            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2">
-              <span class="text-xl font-bold text-text">Mi</span>
-            </div>
-            <span class="text-sm font-semibold text-center">Xiaomi</span>
-          </router-link>
-          <router-link to="/products?category=tablet" class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg">
-            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2">
-              <svg class="w-8 h-8 text-text" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 16c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-semibold text-center">Tablet</span>
-          </router-link>
-          <router-link to="/products?category=watch" class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg">
-            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2">
-              <svg class="w-8 h-8 text-text" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20 12c0-2.54-1.19-4.81-3.04-6.27L16 0H8l-.95 5.73C5.19 7.19 4 9.45 4 12s1.19 4.81 3.05 6.27L8 24h8l.96-5.73C18.81 16.81 20 14.54 20 12zM6 12c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-semibold text-center">Đồng hồ</span>
-          </router-link>
-          <router-link to="/products?category=accessories" class="flex flex-col items-center p-4 hover:shadow-card transition-shadow rounded-lg">
-            <div class="w-16 h-16 bg-background rounded-full flex items-center justify-center mb-2">
-              <svg class="w-8 h-8 text-text" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-              </svg>
-            </div>
-            <span class="text-sm font-semibold text-center">Phụ kiện</span>
+            <span class="text-sm font-semibold text-center">{{ category.name }}</span>
           </router-link>
         </div>
       </div>
     </section>
 
     <!-- Featured Products - Điện thoại -->
-    <section class="section bg-background">
+    <section class="section bg-background" v-if="brands.length > 0 && brands[0]">
       <div class="container-custom">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">Điện thoại</h2>
-          <router-link to="/products?category=phone" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
+          <h2 class="section-title mb-0">{{ brands[0] }}</h2>
+          <router-link :to="`/products?brand=${brands[0]}`" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
             Xem tất cả →
           </router-link>
         </div>
@@ -161,7 +141,7 @@
       </div>
     </section>
 
-    <!-- Promo Banner -->
+    <!-- Promo Banner
     <section class="py-8">
       <div class="container-custom">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -181,14 +161,14 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- Featured Products - Tablet -->
-    <section class="section bg-white">
+    <section class="section bg-white" v-if="brands.length > 1 && brands[1]">
       <div class="container-custom">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">Máy tính bảng</h2>
-          <router-link to="/products?category=tablet" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
+          <h2 class="section-title mb-0">{{ brands[1] }}</h2>
+          <router-link :to="`/products?brand=${brands[1]}`" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
             Xem tất cả →
           </router-link>
         </div>
@@ -225,11 +205,11 @@
     </section>
 
     <!-- Featured Products - Phụ kiện (Accessories) -->
-    <section v-if="accessoriesProducts.length > 0" class="section bg-background">
+    <section v-if="accessoriesProducts.length > 0 && brands.length > 2 && brands[2]" class="section bg-background">
       <div class="container-custom">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">Phụ kiện</h2>
-          <router-link to="/products?category=accessories" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
+          <h2 class="section-title mb-0">{{ brands[2] }}</h2>
+          <router-link :to="`/products?brand=${brands[2]}`" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
             Xem tất cả →
           </router-link>
         </div>
@@ -257,11 +237,11 @@
     </section>
 
     <!-- Featured Products - LAPTOP -->
-    <section v-if="laptopProducts.length > 0" class="section bg-white">
+    <section v-if="laptopProducts.length > 0 && brands.length > 3 && brands[3]" class="section bg-white">
       <div class="container-custom">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="section-title mb-0">LAPTOP</h2>
-          <router-link to="/products?category=laptop" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
+          <h2 class="section-title mb-0">{{ brands[3] }}</h2>
+          <router-link :to="`/products?brand=${brands[3]}`" class="text-secondary hover:text-secondary-hover font-semibold text-sm uppercase">
             Xem tất cả →
           </router-link>
         </div>
@@ -338,6 +318,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import productService from '@/services/productService'
+import categoryService from '@/services/categoryService'
 import { useCartStore } from '@/stores/cartStore'
 import { resolveAssetUrl as asset } from '@/utils/assets'
 import { formatVND } from '@/utils/currency'
@@ -383,6 +364,14 @@ const leftBanner = computed(() => heroBanners.value[0] || null)
 
 const rightSmallBanners = ref([])
 
+// Categories
+const categories = ref([])
+const loadingCategories = ref(false)
+
+// Brands - Dynamic from database
+const brands = ref([])
+const loadingBrands = ref(false)
+
 // Featured products by category
 const phoneProducts = ref([])
 const tabletProducts = ref([])
@@ -427,6 +416,39 @@ const fetchRightSmallBanners = async () => {
   }
 };
 
+const loadCategories = async () => {
+  loadingCategories.value = true
+  try {
+    const response = await categoryService.getCategories()
+    categories.value = response.data?.data || []
+  } catch (error) {
+    console.error('Failed to load categories:', error)
+    categories.value = []
+  } finally {
+    loadingCategories.value = false
+  }
+}
+
+const loadBrands = async () => {
+  loadingBrands.value = true
+  try {
+    const response = await productService.getBrands()
+    brands.value = response.data?.data || []
+    
+    // After loading brands, fetch featured products for each brand (max 4 brands)
+    const topBrands = brands.value.slice(0, 4)
+    if (topBrands[0]) fetchFeatured({ params: { brand: topBrands[0] }, listRef: phoneProducts, loadingRef: loadingPhones })
+    if (topBrands[1]) fetchFeatured({ params: { brand: topBrands[1] }, listRef: tabletProducts, loadingRef: loadingTablet })
+    if (topBrands[2]) fetchFeatured({ params: { brand: topBrands[2] }, listRef: accessoriesProducts, loadingRef: loadingAccessories })
+    if (topBrands[3]) fetchFeatured({ params: { brand: topBrands[3] }, listRef: laptopProducts, loadingRef: loadingLaptop })
+  } catch (error) {
+    console.error('Failed to load brands:', error)
+    brands.value = []
+  } finally {
+    loadingBrands.value = false
+  }
+}
+
 const safeArray = (v) => {
   const data = v?.data?.data ?? v?.data ?? v
   if (Array.isArray(data)) return data
@@ -463,12 +485,11 @@ onMounted(() => {
 
   loadHeroBanners();
   fetchRightSmallBanners();
+  loadCategories();
+  loadBrands();
 
-  // Featured blocks - All category-based
-  fetchFeatured({ params: { category: 'phone' }, listRef: phoneProducts, loadingRef: loadingPhones })
-  fetchFeatured({ params: { category: 'tablet' }, listRef: tabletProducts, loadingRef: loadingTablet })
-  fetchFeatured({ params: { category: 'accessories' }, listRef: accessoriesProducts, loadingRef: loadingAccessories })
-  fetchFeatured({ params: { category: 'laptop' }, listRef: laptopProducts, loadingRef: loadingLaptop })
+  // Featured blocks - Using brand instead of category
+  // Will be populated dynamically after brands are loaded
 });
 </script>
 
