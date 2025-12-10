@@ -20,7 +20,9 @@
             <p class="text-gray-600 text-sm font-medium mb-2">{{ card.title }}</p>
             <p class="text-3xl font-bold text-gray-900">{{ loading ? '…' : card.value }}</p>
           </div>
-          <div class="text-4xl ml-4 opacity-80">{{ card.icon }}</div>
+          <div class="text-4xl ml-4 opacity-80">
+            <i :class="card.icon"></i>
+          </div>
         </div>
         <div class="mt-4 h-1 bg-gradient-to-r from-primary to-primary-700 rounded-full" style="width: 40%"></div>
       </div>
@@ -31,7 +33,7 @@
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h2 class="text-xl font-bold text-gray-900">🔥 Sản phẩm nổi bật</h2>
+            <h2 class="text-xl font-bold text-gray-900"><i class="fas fa-fire text-orange-500"></i> Sản phẩm nổi bật</h2>
             <p class="text-sm text-gray-500 mt-1">Top views</p>
           </div>
           <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold" v-if="!loading">{{ topProducts.length }}</span>
@@ -47,7 +49,7 @@
               <img :src="p.thumbnail || '/images/placeholder.png'" alt="thumb" class="w-14 h-14 rounded-lg object-cover shadow-sm" />
               <div class="flex-1">
                 <p class="font-semibold text-gray-900">{{ p.name }}</p>
-                <p class="text-xs text-gray-500 mt-1">👁️ {{ p.viewCount?.toLocaleString() || 0 }} lượt xem</p>
+                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-eye"></i> {{ p.viewCount?.toLocaleString() || 0 }} lượt xem</p>
               </div>
             </div>
             <div class="text-right">
@@ -61,7 +63,7 @@
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h2 class="text-xl font-bold text-gray-900">⚠️ Sắp hết hàng</h2>
+            <h2 class="text-xl font-bold text-gray-900"><i class="fas fa-exclamation-triangle text-orange-500"></i> Sắp hết hàng</h2>
             <p class="text-sm text-gray-500 mt-1">Cần nhập thêm</p>
           </div>
           <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold" v-if="!loading">{{ lowStock.length }}</span>
@@ -77,7 +79,7 @@
               <img :src="p.thumbnail || '/images/placeholder.png'" alt="thumb" class="w-14 h-14 rounded-lg object-cover shadow-sm" />
               <div class="flex-1">
                 <p class="font-semibold text-gray-900">{{ p.name }}</p>
-                <p class="text-xs text-orange-600 mt-1 font-medium">📦 Tồn: {{ p.stock }} cái</p>
+                <p class="text-xs text-orange-600 mt-1 font-medium"><i class="fas fa-box"></i> Tồn: {{ p.stock }} cái</p>
               </div>
             </div>
             <div class="text-right">
@@ -91,7 +93,7 @@
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 lg:col-span-2">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h2 class="text-xl font-bold text-gray-900">💬 Liên hệ gần đây</h2>
+            <h2 class="text-xl font-bold text-gray-900"><i class="fas fa-comments text-blue-500"></i> Liên hệ gần đây</h2>
             <p class="text-sm text-gray-500 mt-1">Tin nhắn từ khách hàng</p>
           </div>
           <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold" v-if="!loading">{{ recentContacts.length }}</span>
@@ -126,7 +128,7 @@
       <!-- Products by category (simple bar chart) -->
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 lg:col-span-2">
         <div class="mb-6">
-          <h2 class="text-xl font-bold text-gray-900">📊 Sản phẩm theo danh mục</h2>
+          <h2 class="text-xl font-bold text-gray-900"><i class="fas fa-chart-bar text-primary"></i> Sản phẩm theo danh mục</h2>
           <p class="text-sm text-gray-500 mt-1">Phân bố sản phẩm</p>
         </div>
         <div v-if="loading" class="text-gray-400 text-center py-8">Đang tải…</div>
@@ -161,14 +163,14 @@ const recentContacts = ref([])
 const productsByCategory = ref([])
 
 const statCards = computed(() => [
-  { title: 'Tổng sản phẩm', value: stats.value?.totalProducts ?? 0, icon: '📱' },
-  { title: 'Danh mục', value: stats.value?.totalCategories ?? 0, icon: '🗂️' },
-  { title: 'Người dùng', value: stats.value?.totalUsers ?? 0, icon: '👥' },
-  { title: 'Liên hệ mới', value: stats.value?.unreadContacts ?? 0, icon: '✉️' },
-  { title: 'Banners', value: stats.value?.totalBanners ?? 0, icon: '🖼️' },
-  { title: 'Trang tĩnh', value: stats.value?.totalPages ?? 0, icon: '📄' },
-  { title: 'Sản phẩm nổi bật', value: stats.value?.featuredProducts ?? 0, icon: '🌟' },
-  { title: 'Tổng lượt xem', value: (stats.value?.totalViews ?? 0).toLocaleString(), icon: '🔍' }
+  { title: 'Tổng sản phẩm', value: stats.value?.totalProducts ?? 0, icon: 'fas fa-mobile-alt' },
+  { title: 'Danh mục', value: stats.value?.totalCategories ?? 0, icon: 'fas fa-folder-open' },
+  { title: 'Người dùng', value: stats.value?.totalUsers ?? 0, icon: 'fas fa-users' },
+  { title: 'Liên hệ mới', value: stats.value?.unreadContacts ?? 0, icon: 'fas fa-envelope' },
+  { title: 'Banners', value: stats.value?.totalBanners ?? 0, icon: 'fas fa-image' },
+  { title: 'Trang tĩnh', value: stats.value?.totalPages ?? 0, icon: 'fas fa-file-alt' },
+  { title: 'Sản phẩm nổi bật', value: stats.value?.featuredProducts ?? 0, icon: 'fas fa-star' },
+  { title: 'Tổng lượt xem', value: (stats.value?.totalViews ?? 0).toLocaleString(), icon: 'fas fa-eye' }
 ])
 
 const fetchData = async () => {
@@ -210,10 +212,10 @@ const statusClass = (status) => {
 
 const statusLabel = (status) => {
   const map = {
-    new: '🆕 Mới',
-    read: '👁️ Đã xem',
-    replied: '✅ Đã trả lời',
-    archived: '📦 Lưu trữ'
+    new: 'Mới',
+    read: 'Đã xem',
+    replied: 'Đã trả lời',
+    archived: 'Lưu trữ'
   }
   return map[status] || status
 }

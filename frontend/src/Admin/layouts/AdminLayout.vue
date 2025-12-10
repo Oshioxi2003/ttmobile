@@ -19,7 +19,7 @@
           <p class="text-sm text-gray-400">Bảng điều khiển</p>
         </div>
         <button class="lg:hidden px-2 py-1 rounded-lg hover:bg-gray-800" @click="toggleMobile(false)" aria-label="Đóng menu">
-          ✖
+          <i class="fas fa-times"></i>
         </button>
       </div>
 
@@ -33,7 +33,7 @@
               :class="$route.path === '/' ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">📊</span> Dashboard
+              <i class="fas fa-chart-line mr-3"></i> Dashboard
             </router-link>
           </li>
           <li>
@@ -43,7 +43,7 @@
               :class="$route.path.startsWith('/products') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">📱</span> Sản phẩm
+              <i class="fas fa-mobile-alt mr-3"></i> Sản phẩm
             </router-link>
           </li>
           <li>
@@ -53,7 +53,7 @@
               :class="$route.path.startsWith('/users') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">👥</span> Người dùng
+              <i class="fas fa-users mr-3"></i> Người dùng
             </router-link>
           </li>
           <li>
@@ -63,7 +63,7 @@
               :class="$route.path.startsWith('/pages') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">📄</span> Trang tĩnh
+              <i class="fas fa-file-alt mr-3"></i> Trang tĩnh
             </router-link>
           </li>
           <li>
@@ -73,7 +73,7 @@
               :class="$route.path.startsWith('/menu-navbar') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">📋</span> Menu Navbar
+              <i class="fas fa-bars mr-3"></i> Menu Navbar
             </router-link>
           </li>
           <li>
@@ -83,7 +83,7 @@
               :class="$route.path.startsWith('/banners') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">🖼️</span> Banners
+              <i class="fas fa-image mr-3"></i> Banners
             </router-link>
           </li>
           <li>
@@ -93,7 +93,7 @@
               :class="$route.path.startsWith('/categories') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">📦</span> Danh mục
+              <i class="fas fa-folder-open mr-3"></i> Danh mục
             </router-link>
           </li>
 
@@ -104,7 +104,7 @@
               :class="$route.path.startsWith('/settings') ? 'bg-[#08A7B9] text-white shadow-lg' : 'hover:bg-gray-800'"
               @click="handleNavClick"
             >
-              <span class="mr-3">⚙️</span> Cài đặt
+              <i class="fas fa-cog mr-3"></i> Cài đặt
             </router-link>
           </li>
         </ul>
@@ -134,7 +134,7 @@
       <header class="bg-white/90 backdrop-blur shadow-sm border-b border-gray-100 px-4 lg:px-6 py-3 lg:py-4 flex items-center justify-between sticky top-0 z-20">
         <div class="flex items-center gap-3">
           <button class="lg:hidden px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50" @click="toggleMobile(true)" aria-label="Mở menu">
-            ☰
+            <i class="fas fa-bars"></i>
           </button>
           <h2 class="text-lg lg:text-xl font-semibold">{{ currentPageTitle }}</h2>
         </div>

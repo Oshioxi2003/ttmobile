@@ -1,10 +1,10 @@
 <template>
   <router-view v-slot="{ Component, route }">
-    <transition name="fade" mode="out-in">
-      <keep-alive :include="['Dashboard', 'Products', 'Users', 'Pages', 'Settings', 'Categories', 'Banners']">
+    <keep-alive :include="['Dashboard', 'Products', 'Users', 'Pages', 'Settings', 'Categories', 'Banners']">
+      <transition name="fade" mode="out-in">
         <component :is="Component" :key="route.path" />
-      </keep-alive>
-    </transition>
+      </transition>
+    </keep-alive>
   </router-view>
 </template>
 
