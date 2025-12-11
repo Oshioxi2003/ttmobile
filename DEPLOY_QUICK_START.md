@@ -31,7 +31,7 @@ DB_NAME=${{MySQL.MYSQLDATABASE}}
 JWT_SECRET=your-super-secret-jwt-key-min-32-characters
 
 # CORS (sau khi có domain)
-ALLOWED_ORIGINS=https://your-app.railway.app
+ALLOWED_ORIGINS=https://ttmobile-production.up.railway.app
 
 # Database Options
 DB_ALTER=false
