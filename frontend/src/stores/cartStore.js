@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import axios from 'axios'
+import api from '@/services/api'
 
-const apiUrl = import.meta.env.VITE_API_URL || '/api/v1'
 const CART_STORAGE_KEY = 'guest_cart'
 
 export const useCartStore = defineStore('cart', () => {
@@ -79,9 +78,7 @@ export const useCartStore = defineStore('cart', () => {
         return
       }
 
-      const response = await axios.get(`${apiUrl}/cart`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const response = await api.get('/cart')
 
       if (response.data.success) {
         items.value = response.data.data.items || []
@@ -105,16 +102,10 @@ export const useCartStore = defineStore('cart', () => {
       loading.value = true
       // Gửi từng item lên server
       for (const item of items.value) {
-        await axios.post(
-          `${apiUrl}/cart`,
-          {
-            product_id: item.id || item.product_id,
-            quantity: item.quantity
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        )
+        await api.post('/cart', {
+          product_id: item.id || item.product_id,
+          quantity: item.quantity
+        })
       }
       // Xóa giỏ hàng local sau khi sync
       localStorage.removeItem(CART_STORAGE_KEY)
@@ -161,16 +152,10 @@ export const useCartStore = defineStore('cart', () => {
       // Nếu đã đăng nhập - gọi API
       loading.value = true
       
-      const response = await axios.post(
-        `${apiUrl}/cart`,
-        {
-          product_id: product.id,
-          quantity: quantity
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await api.post('/cart', {
+        product_id: product.id,
+        quantity: quantity
+      })
 
       if (response.data.success) {
         items.value = response.data.data.items || []
@@ -213,13 +198,7 @@ export const useCartStore = defineStore('cart', () => {
       // Nếu đã đăng nhập - gọi API
       loading.value = true
       
-      const response = await axios.put(
-        `${apiUrl}/cart/${productId}`,
-        { quantity },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await api.put(`/cart/${productId}`, { quantity })
 
       if (response.data.success) {
         items.value = response.data.data.items || []
@@ -253,12 +232,7 @@ export const useCartStore = defineStore('cart', () => {
       // Nếu đã đăng nhập - gọi API
       loading.value = true
       
-      const response = await axios.delete(
-        `${apiUrl}/cart/${productId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await api.delete(`/cart/${productId}`)
 
       if (response.data.success) {
         items.value = response.data.data.items || []
@@ -291,12 +265,7 @@ export const useCartStore = defineStore('cart', () => {
       // Nếu đã đăng nhập - gọi API
       loading.value = true
       
-      const response = await axios.delete(
-        `${apiUrl}/cart`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      const response = await api.delete('/cart')
 
       if (response.data.success) {
         items.value = []

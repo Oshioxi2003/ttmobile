@@ -3,6 +3,13 @@ const Cart = require('../models/cart.model')
 // Lấy giỏ hàng
 exports.getCart = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      })
+    }
+    
     const result = await Cart.getTotal(req.user.id)
     
     res.json({

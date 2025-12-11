@@ -155,10 +155,9 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '@/services/api'
 
 const router = useRouter()
-const apiUrl = import.meta.env.VITE_API_URL || '/api/v1'
 
 const showPassword = ref(false)
 const loading = ref(false)
@@ -190,7 +189,7 @@ const handleRegister = async () => {
   loading.value = true
 
   try {
-    const response = await axios.post(`${apiUrl}/auth/register`, {
+    const response = await api.post('/auth/register', {
       full_name: form.fullName,
       username: form.username,
       email: form.email,

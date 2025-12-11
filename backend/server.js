@@ -46,6 +46,20 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Handle Private Network Access (Chrome's CORS-RFC1918)
+// This allows dev tunnels to access localhost
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = process.env.NODE_ENV === 'production'
+        ? (process.env.ALLOWED_ORIGINS || '').split(',')
+        : ['https://rs1rgfxz-3000.asse.devtunnels.ms', 'https://rs1rgfxz-5173.asse.devtunnels.ms', 'http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'];
+    
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Private-Network', 'true');
+    }
+    next();
+});
+
 // Rate limiting - General API
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes

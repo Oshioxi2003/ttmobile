@@ -108,11 +108,10 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cartStore'
-import axios from 'axios'
+import api from '@/services/api'
 
 const router = useRouter()
 const cartStore = useCartStore()
-const apiUrl = import.meta.env.VITE_API_URL || '/api/v1'
 
 const showPassword = ref(false)
 const loading = ref(false)
@@ -129,7 +128,7 @@ const handleLogin = async () => {
   error.value = ''
 
   try {
-    const response = await axios.post(`${apiUrl}/auth/login`, {
+    const response = await api.post('/auth/login', {
       email: form.email,
       password: form.password
     })
@@ -140,9 +139,6 @@ const handleLogin = async () => {
       // Lưu token và user info vào localStorage
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
-      
-      // Set axios default header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
       
       // Đồng bộ giỏ hàng local lên server
       await cartStore.syncCartToServer()
