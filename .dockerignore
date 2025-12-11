@@ -11,3 +11,7 @@ frontend/dist
 uploads/*
 !uploads/.gitkeep
 
+# Keep package-lock.json files for npm ci
+!frontend/package-lock.json
+!backend/package-lock.json
+
