@@ -113,22 +113,46 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // API Routes
 app.use(API_PREFIX, routes);
 
-// Root endpoint
-app.get('/', (_req, res) => {
-    res.json({
-        success: true,
-        message: 'T&T Mobile API Server',
-        version: '1.0.0',
-        docs: `${API_PREFIX}/health`,
-        endpoints: {
-            auth: `${API_PREFIX}/auth`,
-            products: `${API_PREFIX}/products`,
-            categories: `${API_PREFIX}/categories`,
-            orders: `${API_PREFIX}/orders`,
-            dashboard: `${API_PREFIX}/dashboard`
-        }
+// Root endpoint (only in development, production will serve frontend)
+if (process.env.NODE_ENV !== 'production') {
+    app.get('/', (_req, res) => {
+        res.json({
+            success: true,
+            message: 'T&T Mobile API Server',
+            version: '1.0.0',
+            docs: `${API_PREFIX}/health`,
+            endpoints: {
+                auth: `${API_PREFIX}/auth`,
+                products: `${API_PREFIX}/products`,
+                categories: `${API_PREFIX}/categories`,
+                orders: `${API_PREFIX}/orders`,
+                dashboard: `${API_PREFIX}/dashboard`
+            }
+        });
     });
-});
+}
+
+// Serve frontend static files in production
+if (process.env.NODE_ENV === 'production') {
+    const frontendPath = path.join(__dirname, '../frontend/dist');
+    
+    // Serve static assets first
+    app.use(express.static(frontendPath));
+    
+    // Serve admin.html for /admin routes
+    app.get('/admin*', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'admin.html'));
+    });
+    
+    // Serve index.html for all other routes (SPA fallback)
+    app.get('*', (req, res) => {
+        // Don't serve index.html for API routes
+        if (req.path.startsWith(API_PREFIX)) {
+            return res.status(404).json({ success: false, message: 'API endpoint not found' });
+        }
+        res.sendFile(path.join(frontendPath, 'index.html'));
+    });
+}
 
 // Error handling
 app.use(notFoundHandler);

@@ -1,0 +1,16 @@
+{
+  "name": "t-t-mobile",
+  "version": "1.0.0",
+  "description": "T&T Mobile - Full Stack E-commerce Application",
+  "scripts": {
+    "build": "cd frontend && npm ci && npm run build",
+    "start": "cd backend && npm ci && npm start",
+    "install:all": "cd frontend && npm ci && cd ../backend && npm ci",
+    "build:prod": "npm run build && cd backend && npm start"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
+
